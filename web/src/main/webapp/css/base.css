@@ -1,0 +1,231 @@
+/**
+ * Tencent is pleased to support the open source community by making Tseer available.
+ *
+ * Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.
+ * 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed 
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+/* css reset */
+html,body,ul,li,ol,table,p,h1,h2,h3,h4,h5,dl,dt,dd,img,input,textarea,select,th,td,label,pre,caption,button{margin: 0; padding: 0;}
+body{background-color: #FFFFFF; color: #24272b; font-size: 13px; font-family: "microsoft yahei";padding:15px;min-width:1100px;}
+ul,li{list-style: none;}
+a{text-decoration: none; color: #3498db;}
+a:hover{color: #278bcd;}
+a,img{border: none;}
+table{border-collapse: collapse; border-spacing: 0;}
+
+/*wsd基础*/
+.f_l{ float:left; }
+.f_r{ float:right; }
+.d_n{ display:none; }
+.blue{ color:#3071a4; }
+.gray{ color:#999; }
+.red{ color:#f00; }
+.green{ color:#008000; }
+.b{ font-weight:bold; }
+.ta_c{ text-align:center; }
+.ta_l{ text-align:left; }
+.ta_r{ text-align:right; }
+.redbd{ border:1px solid #FF0000; }
+.h8{ height:8px; overflow:hidden; clear:both; }
+.w120{ width:120px; }
+.w100{ width:100px; }
+.w80{ width:80px; }
+.w30{ width:30px; }
+.new_logo,.old_logo{font-size:22px;color:#2a5fcb;font-family:'微软雅黑';line-height:60px;text-indent:12px;}
+.old_logo{color:#26659a;}
+
+
+/* 对齐 */
+.fl{ float:left !important;}.fr{ float:right !important;}
+.tc{ text-align:center;}.tl{text-align: left;}.tr{ text-align:right;}
+.lh28{line-height: 28px;} .lh35{line-height: 35px;}
+.clearfix:after{content: '';clear: both;overflow: hidden;height: 0;} .clearfix{zoom: 1;} .clear{clear: both;height: 0;overflow: hidden;}
+.mid{width: 1000px;margin: 0 auto;} .hide{display: none;}
+
+/* 边距 */
+.p10{padding: 10px;} .pt10{padding-top: 10px;} .pr10{padding-right: 10px;} .pb10{padding-bottom: 10px;} .pl10{padding-left: 10px;}
+.p15{padding: 15px;} .pt15{padding-top: 15px;} .pr15{padding-right: 15px;} .pb15{padding-bottom: 15px;} .pl15{padding-left: 15px;}
+.pt20{padding-top: 20px;} .pr20{padding-right: 20px;} .pb20{padding-bottom: 20px;} .pl20{padding-left: 20px;}
+.pt30{padding-top: 30px;} .pr30{padding-right: 30px;} .pb30{padding-bottom: 30px;} .pl30{padding-left: 30px;}
+.m10{margin: 10px;} .mt10{margin-top: 10px;} .mr10{margin-right: 10px;} .mb10{margin-bottom: 10px;} .ml10{margin-left: 10px;}
+.m15{margin: 15px;} .mt15{margin-top: 15px;} .mr15{margin-right: 15px;} .mb15{margin-bottom: 15px;} .ml15{margin-left: 15px;}
+.mt20{margin-top: 20px;} .mr20{margin-right: 20px;} .mb20{margin-bottom: 20px;} .ml20{margin-left: 20px;}
+.mt30{margin-top: 30px;} .mr30{margin-right: 30px;} .mb30{margin-bottom: 30px;} .ml30{margin-left: 30px;}
+.ml5{margin-left:5px;}
+
+/* 宽高度 */
+.w100{width: 100px;} .w200{width: 200px;} .w400{width: 400px;}
+.h28{height: 28px;} .h35{height: 35px;}
+
+/* 字体与颜色 */
+.blue{color: #3499da;} .gray{color: #999999;} .red{color: #f00000} .green{color: #008000;}
+.f12{font-size: 12px;} .f14{font-size: 14px;} .f16{font-size:16px;} .f18{font-size: 18px;}
+
+/* 按钮 */
+.blue_btn,.gray_btn,.big_blue_btn{font-size: 12px;line-height: 1;font-family: "microsoft yahei";border-radius: 3px;text-decoration: none;text-align: center;cursor: pointer;outline: none;display: inline-block;height: 28px;line-height: 26px;padding: 0 15px;vertical-align: middle;}
+a.blue_btn,a.gray_btn{height: 26px;}
+.big_blue_btn{font-size: 14px;line-height: 33px;height: 35px;}
+a.big_blue_btn{height: 33px;}
+.blue_btn,.big_blue_btn{
+    border: solid 1px #2485c6; color: #ffffff;background: #3498db;
+    background-image: -webkit-linear-gradient(#41a3e4, #3599db);
+    background-image: -moz-linear-gradient(#41a3e4, #3599db);
+    background-image: -o-linear-gradient(#41a3e4, #3599db);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#41a3e4), to(#3599db));
+    background-image: linear-gradient(#41a3e4, #3599db);
+}
+.blue_btn:hover,.big_blue_btn:hover{color: #ffffff;background: #288ccf;
+    background-image: -webkit-linear-gradient(#2f92d4, #2186ca);
+    background-image: -moz-linear-gradient(#2f92d4, #2186ca);
+    background-image: -o-linear-gradient(#2f92d4, #2186ca);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2f92d4), to(#2186ca));
+    background-image: linear-gradient(#2f92d4, #2186ca);
+}
+.blue_btn:active,.big_blue_btn:active{
+    background-image: -webkit-linear-gradient(#2186ca, #2f92d4);
+    background-image: -moz-linear-gradient(#2186ca, #2f92d4);
+    background-image: -o-linear-gradient(#2186ca, #2f92d4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2186ca), to(#2f92d4));
+    background-image: linear-gradient(#2186ca, #2f92d4);
+}
+.blue_btn:disabled,.blue_btn.disabled,big_blue_btn:disabled,.big_blue_btn.disabled{color: #d3ebfb; cursor: default;background: #63b6ef;}
+.gray_btn{
+    border: solid 1px #a9a9a9; color: #24272b;background: #f2f2f2;
+    background-image: -webkit-linear-gradient(#f5f5f5, #f0f0f0);
+    background-image: -moz-linear-gradient(#f5f5f5, #f0f0f0);
+    background-image: -o-linear-gradient(#f5f5f5, #f0f0f0);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f5f5f5), to(#f0f0f0));
+    background-image: linear-gradient(#f5f5f5, #f0f0f0);
+}
+.gray_btn:hover{color: #24272b;background: #e8e8e8;
+    background-image: -webkit-linear-gradient(#f0f0f0, #e0e0e0);
+    background-image: -moz-linear-gradient(#f0f0f0, #e0e0e0);
+    background-image: -o-linear-gradient(#f0f0f0, #e0e0e0);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f0f0f0), to(#e0e0e0));
+    background-image: linear-gradient(#f0f0f0, #e0e0e0);
+}
+.gray_btn:active{
+    background-image: -webkit-linear-gradient(#e0e0e0, #f0f0f0);
+    background-image: -moz-linear-gradient(#e0e0e0, #f0f0f0);
+    background-image: -o-linear-gradient(#e0e0e0, #f0f0f0);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e0e0e0), to(#f0f0f0));
+    background-image: linear-gradient(#e0e0e0, #f0f0f0);
+}
+.gray_btn:disabled,.gray_btn.disabled{
+    background: #f3f2f2; cursor: default; color: #999999;
+}
+
+/* 提示 */
+.success_tip,.error_tip,.common_tip{padding: 10px;border-radius: 5px;}
+.success_tip{background: #C2D991;color: #335928;}
+.error_tip{background: #facac4;color: #a42d1e;}
+.common_tip{background: #e6f2f9;color: #24272b;border: solid 1px #7a9fb8;}
+.font_tip{color: #62b6ee; display: inline-block;border-bottom: dashed 1px #62b6ee;cursor: default;}
+
+/* 控件 */
+.text_input{height:26px; line-height:26px; padding:0; text-indent: 5px; outline: none; border:solid 1px #ccc}
+.text_input_h{height:33px; line-height:33px; padding:0; text-indent: 5px; outline: none; border:solid 1px #ccc}
+.text_input:focus,.text_input_h:focus{border:solid 1px #66afe9;}
+select {border: solid 1px #999999;padding:0 20px 0 5px;outline: none;background: url("../images/select_down.png") right center no-repeat;font-size: 12px;
+  /*很关键：将默认的select选择框样式清除*/
+  appearance:none;-moz-appearance:none;-webkit-appearance:none;
+  padding-right: 0\9; /* IE8/IE9/IE10 hack */
+  height: 28px;
+}
+select:hover,select:focus{border-color: #3498db;}
+/*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+select::-ms-expand { display: none; }
+/*区别IE10与IE9只能用媒体查询了*/
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) { 
+   select{padding-right: 20px;}
+}
+
+/*表格前面按钮栏*/
+.table_toolbar{
+    border-bottom: 1px solid #CCC;
+    border-top: 1px solid #CCC;
+    border-left: 0;
+    border-right: 0;
+    margin-bottom: -1px;
+    padding: 5px 10px;
+    background: #ebebf0;
+}
+table.paging_table tbody tr td.td_title{
+    background-color:#E5E5E5;
+}
+.paging_table th{
+    font-size: 14px;
+}
+.paging_table{
+    border-top:solid 1px #e0e0e0;
+}
+.taf_cloud_combo span.combo{
+    height:26px;
+    border:1px solid #999;
+}
+.taf_cloud_combo .combo-text{
+    padding-left: 6px;
+    height:26px;
+}
+
+.taf_query_table{
+    border-collapse: collapse; border-spacing: 0;border:0;
+}
+.taf_query_table td{
+    border:0;
+    padding-bottom: 15px;
+    padding-left:40px;
+}
+.red{
+    color:red;
+}
+.blue{
+    color:blue;
+}
+.gray{
+    color:gray;
+}
+
+/* 图标 */
+i[class^="icon_"],i[class*=" icon_"]{display:inline-block;width:16px;height:16px;background-image:url('../images/sprites.png');background-repeat:no-repeat;position: relative;top:-2px;vertical-align: middle;}
+.icon_plus_trans{background-position: 0 0;}
+.icon_minus_trans{background-position: -16px 0;}
+.icon_plus_trans_green{background-position: -32px 0;}
+.icon_minus_trans_red{background-position: -48px 0;}
+.icon_plus_green{background-position: -64px 0;}
+.icon_minus_red{background-position: -80px 0;}
+.icon_check_trans_green{background-position: -96px 0;}
+.icon_error_trans_red{background-position: -112px 0;}
+.icon_plus_white{background-position: -128px 0;}
+.icon_minus_white{background-position: -144px 0;}
+.icon_refresh{background-position: 0px -16px;}
+.icon_refresh_white{background-position: -16px -16px;}
+.icon_search_white{background-position: -32px -16px;}
+.icon_search{background-position: -48px -16px;}
+.icon_upload{background-position: -64px -16px;}
+.icon_download{background-position: -80px -16px;}
+.icon_edit{background-position: -96px -16px;}
+.icon_edit_white{background-position: -112px -16px;}
+.icon_alert{background-position: -128px -16px;}
+.icon_alert_orange{background-position: -144px -16px;}
+.icon_question{background-position: 0px -32px;}
+.icon_question_blue{background-position: -16px -32px;}
+.icon_question_trans{background-position: -32px -32px;}
+.icon_question_trans_blue{background-position: -48px -32px;}
+.icon_home{background-position: -64px -32px;}
+.icon_menu{background-position: -80px -32px;}
+.icon_menu_white{background-position: -96px -32px;}
+.icon_copy{background-position: -112px -32px;}
+.icon_setting{background-position: -128px -32px;}
+.icon_setting_white{background-position: -144px -32px;}
+.icon_offline_white{background-position: 0px -48px;}

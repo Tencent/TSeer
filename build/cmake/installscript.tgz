@@ -1,0 +1,137 @@
+#!/usr/bin/env python
+#coding:utf8
+
+import datetime
+from commands import getstatusoutput
+import re
+import platform
+import sys
+import optparse
+import os
+
+TIME_STAMP = str(datetime.datetime.now()).split('.')[0]
+PKG_URL = 'http://download.seer.wsd.com/router_agent?os='
+
+def execute_cmd(cmd):
+    stat, rst = getstatusoutput(cmd)
+    return stat == 0, rst
+
+
+def get_os_info():
+    arr = platform.dist()
+    bit = platform.architecture()[0][:-3]
+    release = arr[0]
+    if re.match(r'centos', arr[0], re.M|re.I):
+        release = arr[0].replace("c", "C").replace("o", "O")
+    dist = release + "-" + arr[1] + "-" + bit
+    return dist
+
+
+def install_seeragent(prefix):
+    os_version = get_os_info()
+    if not os.path.exists('%s.tgz' % os_version):
+        get_pkg_cmd = "wget -q %s%s -O %s.tgz" % (PKG_URL, os_version, os_version)
+        stat, rst = execute_cmd(get_pkg_cmd)
+        if not stat:
+            print "[ERROR] %s wget TseerAgent Failed." % TIME_STAMP
+            print rst
+            sys.exit(1)
+
+    untar_cmd = "tar zxf %s.tgz -C %s && rm -fr %s.tgz" % (os_version, prefix, os_version)
+    stat, rst = execute_cmd(untar_cmd)
+    if not stat:
+        print "[ERROR] %s deploy TseerAgent Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+    print "[SUCC] %s deploy TseerAgent Success." % TIME_STAMP
+
+def getlocator():
+    from urlparse import urlparse
+    rs = urlparse(PKG_URL)
+    getlocatorcmd = "curl -s %s://%s/getlocator" % (rs.scheme,rs.netloc)
+    stat, rst = execute_cmd(getlocatorcmd)
+    if not stat:
+        print "[ERROR] %s get locator Failed." % TIME_STAMP
+        sys.exit(1)
+    return rst
+	
+def change_conf(prefix,innerip=""):
+    if innerip == "":
+        get_local_ip_cmd= "ip a s |awk '/inet/ { if (($2 !~ /127.0.0.1/) && ($2 !~ /::1/)) { print $2} }'| cut -d / -f 1"
+        stat, rst = execute_cmd(get_local_ip_cmd)
+        if not stat:
+            print "[ERROR] %s Get local ip Failed." % TIME_STAMP
+            sys.exit(1)
+        innerip = rst.strip()
+    local_ip = innerip
+    locatorlist = getlocator()
+    
+    change_conf_cmd = 'sed -i -e "s#installpath=.*#installpath=%s#g" \
+                        -e "s#localip=.*#localip=%s#g" \
+                        -e "s#locator=.*#locator=%s#g" \
+                        %s/Tseer/TseerAgent/conf/TseerAgent.conf' % (prefix, local_ip,locatorlist, prefix)
+    stat, rst = execute_cmd(change_conf_cmd)
+    if not stat:
+        print "[ERROR] %s Change SeerAgent conf Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+
+    change_mon_cmd = 'sed -i "s#BASE_DIR=.*#BASE_DIR=%s#g" %s/Tseer/TseerAgent/util/mon_TseerAgent.sh' % (prefix, prefix)
+
+    stat, rst = execute_cmd(change_mon_cmd)
+    if not stat:
+        print "[ERROR] %s Change mon_TseerAgent.sh conf Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+
+    change_start_cmd = 'sed -i "s#SEER_BASEDIR=.*#SEER_BASEDIR=%s#g" %s/Tseer/TseerAgent/util/start.sh' % (prefix, prefix)
+    stat, rst = execute_cmd(change_start_cmd)
+    if not stat:
+        print "[ERROR] %s Change start.sh conf Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+
+    change_stop_cmd = 'sed -i "s#SEER_BASEDIR=.*#SEER_BASEDIR=%s#g" %s/Tseer/TseerAgent/util/stop.sh' % (prefix, prefix)
+    stat, rst = execute_cmd(change_stop_cmd)
+    if not stat:
+        print "[ERROR] %s Change stop.sh conf Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+		
+    print "[SUCC] %s Change TseerAgent conf Successfully." % TIME_STAMP
+
+
+def start_service(prefix):
+    start_cmd = "sh %s/Tseer/TseerAgent/util/start.sh" % prefix
+    stat, rst = execute_cmd(start_cmd)
+    if not stat:
+        print "[ERROR] %s Start TseerAgent Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+    print "[SUCC] %s Start TseerAgent Successfully." % TIME_STAMP
+
+
+def add_monitor(prefix):
+    cron_cmd = "(crontab -l ; echo '* * * * * sh %s/Tseer/util/mon_TseerAgent.sh') | crontab -" % prefix
+    stat, rst = execute_cmd(cron_cmd)
+    if not stat:
+        print "[ERROR] %s Add monitor Failed." % TIME_STAMP
+        print rst
+        sys.exit(1)
+    print "[SUCC] %s Add monitor Successfully." % TIME_STAMP
+
+
+if __name__ == '__main__':
+    usage = "usage: python %prog --prefix=/usr/local"
+    parser = optparse.OptionParser(usage=usage, version="%prog 1.0")
+    parser.add_option("-p", "--prefix", dest='prefix', default="/usr/local/", type="string",
+                      help=u"install path")
+    parser.add_option("-i", "--innerip", dest='innerip', default="", type="string",
+                      help=u"ip,local inner ip")
+    options, args = parser.parse_args()
+    prefix = options.prefix
+    innerip = options.innerip
+    install_seeragent(prefix)
+    change_conf(prefix,innerip)
+    start_service(prefix)
+    add_monitor(prefix)

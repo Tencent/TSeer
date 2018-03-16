@@ -1,0 +1,24 @@
+/************************************************************
+* 文件定义了TseerAgent对api提供的接口
+************************************************************/
+
+#include "TseerAgentComm.tars"
+
+module Tseer
+{	
+	interface Router
+	{
+		/**
+		 * 获取某服务的SET、IDC、ALL节点；成功返回0，失败返回-1
+		 */
+		
+		int getRouterNode(AgentRouterRequest req, out AgentRouterResponse rsp);
+
+		/**
+		 * 模调数据上报；成功返回0，失败返回-1
+		 */
+		int reportStat(NodeStat stat);
+	};
+
+};
+

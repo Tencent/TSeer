@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<config>
+	<!-- 全局配置 -->
+	<global>
+		<!-- 全局跳转配置 -->
+		<forwards>
+			<forward name="400" url="/400.htm" />
+			<forward name="500" url="/500.htm" />
+		</forwards>
+	</global>
+	
+	<!-- Agent发布包管理 -->
+	<servlet>
+		<path>/package/manage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>packageManage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/package/uploadpage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>uploadPage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/package/updatePackage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>updatePackage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/package/delPackage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>delPackage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/package/release.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>release</method>
+	</servlet>
+	
+	<!-- Agent发布包管理 -->
+	
+	
+	<!-- Agent安装工具 -->
+	<servlet>
+		<path>/router_manager/agent_router_install_page.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>agentRouterInstallPage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/router_manager/agent_router_install_command.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>agentRouterInstallCommand</method>
+	</servlet>
+	<!-- Agent安装工具 -->
+	
+	
+	<!-- Agent管理 -->
+	<servlet>
+		<path>/package/grayReleasedPage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>grayReleasedPage</method>
+	</servlet>
+	
+	<servlet>
+		<path>/package/incGrayReleasedPage.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>incGrayReleasedPage</method>
+	</servlet>
+	<!-- Agent管理 -->
+	
+		<!-- 业务集列表 -->
+	<servlet>
+		<path>/router_manager/service_group_list.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>serviceGroupList</method>
+	</servlet>
+	
+	<servlet>
+		<path>/router_manager/ip_port_list.action</path>
+		<package>com.qq.seer.servlet</package>
+		<class>PageServlet</class>
+		<method>ipPortList</method>
+	</servlet>
+	
+	<!-- 业务集列表 -->
+
+</config>
+

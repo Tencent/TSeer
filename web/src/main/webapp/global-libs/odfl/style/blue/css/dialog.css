@@ -1,0 +1,84 @@
+/**
+ * Tencent is pleased to support the open source community by making Tseer available.
+ *
+ * Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.
+ * 
+ * Licensed under the BSD 3-Clause License (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * https://opensource.org/licenses/BSD-3-Clause
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed 
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+div.ui-dialog{
+	padding:0;
+}
+div.ui-widget-header{
+	background-image:none;
+	background-color: #51616D;
+	border: 1px solid #B9B9B9;
+}
+div.ui-widget-content{
+	border: 0px solid #fff;
+}
+span.ui-button-icon-primary, span.ui-icon ui-icon-closethick{
+	background-image:none;
+	background-color: #F0F0F0 !important;
+}
+
+.ui-state-hover span.ui-icon, .ui-state-focus span.ui-icon {
+	background-image: url(images/ui-icons_217bc0_256x240.png);
+}
+
+.ui-state-default span.ui-icon {
+	background-image: url(images/ui-icons_6da8d5_256x240.png);
+}
+
+.ui-dialog-titlebar button.ui-state-hover, .ui-dialog-titlebar .ui-widget-content button.ui-state-hover, .ui-dialog-titlebar .ui-widget-header button.ui-state-hover, 
+.ui-dialog-titlebar button.ui-state-focus, .ui-dialog-titlebar .ui-widget-content button.ui-state-focus, .ui-dialog-titlebar .ui-widget-header button.ui-state-focus {
+	border: 1px solid #79b7e7;
+	background-image:none;
+	background-color:#fff;
+	font-weight: bold;
+	color: #1d5987;
+}
+
+.ui-dialog-titlebar button.ui-state-default, .ui-dialog-titlebar .ui-widget-content button.ui-state-default, .ui-dialog-titlebar .ui-widget-header button.ui-state-default {
+	border: 1px solid #c5dbec;
+	background-image:none;
+	background-color:#fff;
+	font-weight: bold;
+	color: #2e6e9e;
+}
+
+.ui-dialog-buttonpane button.ui-state-default, .ui-dialog-buttonpane .ui-widget-content button.ui-state-default, .ui-dialog-buttonpane .ui-widget-header button.ui-state-default {
+	border: 1px solid #CECECE;
+	background-color: #52647C;
+	background-image: none;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+.ui-dialog-buttonpane button.ui-state-hover, .ui-dialog-buttonpane .ui-widget-content button.ui-state-hover, .ui-dialog-buttonpane .ui-widget-header button.ui-state-hover, .ui-dialog-buttonpane button.ui-state-focus, 
+.ui-dialog-buttonpane .ui-widget-content button.ui-state-focus, .ui-dialog-buttonpane .ui-widget-header button.ui-state-focus {
+	border: 1px solid #CECECE;
+	background-color: #52647C;
+	background-image: none;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+.ui-dialog-buttonpane button.ui-state-hover:hover, .ui-dialog-buttonpane .ui-widget-content button.ui-state-hover:hover, .ui-dialog-buttonpane .ui-widget-header button.ui-state-hover:hover,
+.ui-dialog-buttonpane button.ui-state-focus:hover, .ui-dialog-buttonpane .ui-widget-content button.ui-state-focus:hover, .ui-dialog-buttonpane .ui-widget-header button.ui-state-focus:hover {
+	border: 1px solid #CECECE;
+	background-color: #6C8796;
+	background-image: none;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+*:focus { outline: none; }

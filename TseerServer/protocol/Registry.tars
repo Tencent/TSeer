@@ -1,0 +1,104 @@
+#include "RegistryDescriptor.tars"
+
+module Tseer
+{	
+    interface Registry
+    {
+        /**
+         * node启动的时候往registry注册一个session
+         *
+         * @param nodeName node名称
+         * @param ni   node详细信息
+         * @param li    node机器负载信息
+         *
+         * @return 注册是否成功
+         */
+        int registerNode(string nodeName, NodeInfo ni, LoadInfo li);
+		
+        /**
+         * node启动的时候往registry注册一个session
+         *
+         * @param nodeInfo 注册信息
+         *
+         * @return 注册是否成功
+         */
+        int registerNodeExt(NodeInstanceInfo nodeInfo);
+
+        /**
+         * node上报心跳及机器负载
+         *
+         * @param nodeName    node名称
+         * @param load    node机器负载信息
+         */
+        int keepAlive(string nodeName, LoadInfo load);
+		
+        /**
+         * node上报心跳及机器负载
+         *
+         * @param nodeName    node名称
+         * @param load    node机器负载信息
+         */
+        int keepAliveExt(NodeInstanceInfo nodeInfo);
+
+        /**
+         * 更新server状态
+         *
+         * @param app:       应用
+         * @param serverName: server 名
+         * @param nodeName : node id
+         * @param state :  server状态信息
+         *
+         * @return 0-成功 others-失败
+         */
+        int updateServer(ServerStateInfo state);
+
+        /**
+         * 批量更新server状态
+         *
+         * @param state :  server状态信息
+         *
+         * @return 0-成功 others-失败
+         */
+        int updateServerBatch(vector<ServerStateInfo> stateList);
+
+        /**
+         * node停止，释放node的会话
+         *
+         * @param nodeName    node名称
+         *
+         * @return 0-成功 others-失败
+         */
+        int destroy(string nodeName);
+
+
+		/**
+    	 * 检查agent是否有更新
+    	 * @param reqInfo  要检查的agent相关版本信息
+    	 * @param rspinfo  目前最新的包版本信息返回
+    	 * @return 0-成功 others-失败
+    	 */
+		int checkChange(PackageInfo reqInfo, out PackageInfo rspinfo);
+
+
+		/**
+		 * 更新agent发布包的接口
+		 * @param req 要请求的具体包信息
+		 * @param rsp 响应的发布包信息
+		 * @return 0-成功 others-失败
+		 */
+		int updatePacket(UpdateReq req, out UpdateRsp rsp);
+
+		/**
+		 * 上传agent发布包到服务器
+		 * 注意 :由于tars的发布包大小限制默认10MB，因此调用次接口时，如果发布包大于10MB，必须拆分包按顺序同步上传
+		 * @param pushPkInfo, 待上传的数据流信息
+		 * @param result, 失败信息
+		 *
+		 * @return 0,表示成功，<0:表示失败
+		 */
+		int pushPackage(PushPackageInfo pushPkInfo, out string result);
+
+    };
+
+};
+

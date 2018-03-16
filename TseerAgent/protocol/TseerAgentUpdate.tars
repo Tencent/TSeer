@@ -1,0 +1,28 @@
+module Tseer
+{
+    struct AgentConfig
+    {
+        0 require string locator;  /* Tseer.TseerServer.QueryObj@tcp -hx.x.x.x -px -txxxx */
+        1 require string nodeIp;   /* node主机的ip */
+    };	
+	
+
+    interface Update
+    {
+        /**
+        * 更新TseerAgent的TseerServer路由服务地址
+        * @param cfg  更新TSeerAgent配置
+		* @param [out] result 操作详情
+        * @return  int 0成功 其它失败
+        */
+        int updateConfig(AgentConfig cfg, out string result);
+
+		/**
+		* 卸载TseerAgent：清理crontab，删除TseerAgent目录结构
+		* @param [out] result 操作详情
+		* @return  int 0成功 其它失败
+		*/
+		int uninstall(out string result);
+    };
+};
+

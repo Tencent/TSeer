@@ -1,0 +1,48 @@
+module Tseer
+{
+	struct RouterData
+	{
+		0 require string moduletype;
+		1 require string application;
+		2 require string service_name;
+		3 require string node_name;
+		4 require string container_name;
+		//填 Y 或者 N 只有这两个值
+		5 require string enable_group;
+		6 require string ip_group_name;
+		//填 Y 或者 N 只有这两个值
+		7 require string enable_set;
+		8 require string set_name;
+		9 require string set_area;
+		10 require string set_group;
+		11 require string weight;
+		//填 active inactive activating deactivating destroying destroyed 只能填这几个值
+		12 require string setting_state;
+		13 require string process_id;
+		//填 active inactive activating deactivating destroying destroyed 只能填这几个值
+		14 require string present_state;
+		15 require string node_port;
+		16 require string container_port;
+		/*
+		  key=路由的obj名字，比如:normal.itil.jdsweb.main_port
+		  value=具体的endpoint字符串详情,例如tcp -h 10.209.19.235 -p 9903 -t 50000
+		 */
+		17 require map<string, string> servant; 
+		18 require string bak_flag;
+		19 require string grid_flag;
+		20 optional string weighttype;             //启用权重类型，默认空，不启用，1:静态权重,2:动态权重
+		21 optional string enable_heartbeat;      //是否允许做心跳超时检测
+		22 optional string heartbeattimeout="60"; //服务心跳超时时间，单位秒
+	};
+    
+	struct RouterDataRequest
+	{
+		0 require string moduletype;
+		1 require string application;
+		2 require string service_name;
+		3 require string node_name;
+		4 require string container_name;
+	};
+	key[RouterDataRequest,moduletype,application,service_name,node_name,container_name];
+};
+

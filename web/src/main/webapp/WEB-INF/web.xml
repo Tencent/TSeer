@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app character-encoding="UTF-8" xmlns="http://caucho.com/ns/resin">
+	
+	<multipart-form upload-max="100M" />
+	
+	<display-name>Seer</display-name>
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<servlet>
+		<description>agent灰度管理</description>
+		<display-name>CompileUploadPackage</display-name>
+		<servlet-name>CompileUploadPackage</servlet-name>
+		<servlet-class>com.qq.seer.agent.UploadAgentPackage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CompileUploadPackage</servlet-name>
+		<url-pattern>/DoCompileUploadPackage</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- 使用FreeMarkerServlet -->
+    <servlet>
+        <servlet-name>freemarker-servlet</servlet-name>
+        <servlet-class>com.qq.seer.common.servlet.DebugableFreeMarkerServlet</servlet-class>
+        <init-param>
+        	<param-name>TemplatePath</param-name>
+        	<param-value>/</param-value>
+       	</init-param>
+       	<init-param>
+       		<param-name>NoCache</param-name>
+       		<param-value>true</param-value>
+       	</init-param>
+       	<init-param>
+       		<param-name>ContentType</param-name>
+       		<param-value>text/html; charset=UTF-8</param-value>
+       	</init-param>
+       	<init-param>
+       		<param-name>default_encoding</param-name>
+       		<param-value>UTF-8</param-value>
+       	</init-param>
+    </servlet>
+    <!-- 使用FreeMarkerServlet -->
+    
+    <servlet-mapping>
+        <servlet-name>freemarker-servlet</servlet-name>
+        <url-pattern>*.ftl</url-pattern>
+    </servlet-mapping>
+    
+    <!-- 页面 -->
+	<servlet>
+		<display-name>ConfigCenterPage</display-name>
+		<servlet-name>ConfigCenterPage</servlet-name>
+		<servlet-class>com.qq.seer.common.servlet.CommonHttpServlet</servlet-class>
+		<init-param>
+			<param-name>CONFIG_PATH</param-name>
+			<param-value>WEB-INF/classes/servlet.seer.page.xml</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+        <servlet-name>ConfigCenterPage</servlet-name>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+    <!-- 页面 -->
+     
+    <!-- 接口调用，替换接口框架逻辑 -->
+    <servlet>
+		<display-name>InterfaceServlet</display-name>
+		<servlet-name>InterfaceServlet</servlet-name>
+		<servlet-class>com.qq.seer.servlet.InterfaceServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+        <servlet-name>InterfaceServlet</servlet-name>
+        <url-pattern>/interface</url-pattern>
+    </servlet-mapping>
+    <!-- 接口调用，替换接口框架逻辑 -->
+</web-app>

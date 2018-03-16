@@ -1,0 +1,24 @@
+module Tseer
+{
+        /*公共错误码*/
+    const int TSEER_SERVERSUCCESS       = 0;             //请求成功
+	const int TSEER_UNKNOW_ERROR        = -99;      //未知错误
+	
+	/*DockerRegistry专用返回码号段: 2000 ~ 2999*/
+	const int TSEER_REGISTRY_UNKNOWN      = 2000;     //
+	const int TSEER_REGISTRY_PARAM_ERROR  =2001;                        //请求参数不合规范
+	const int TSEER_REGISTRY_UPDATESERVER_PARAM_ERROR      = 2002;     //updateServer接口参数错误
+	const int TSEER_REGISTRY_GETSERVER_PARAM_ERROR      = 2003;     //get接口参数错误
+	const int TSEER_REGISTRY_SETSERVER_PARAM_ERROR      = 2004;     //set接口参数错误
+	const int TSEER_REGISTRY_DELTESERVER_PARAM_ERROR      = 2005;     //deletedata接口参数错误
+	const int TSEER_REGISTRY_ADDSERVER_PARAM_ERROR      = 2005;     //deletedata接口参数错误
+	
+	/*TSeerServer etcd专用返回码号段: 2500 ~ 2999，结合*/
+	const int TSEER_REGISTRY_ETCD_UNKNOWN      = 2500;     //
+	const int TSEER_REGISTRY_ETCD_PARSE_JSON_FAIL = 2501;  //解析etcd返回的json结构失败
+	const int TSEER_REGISTRY_ETCD_TIMEOUT = 2502;//调用etcd返回超时
+	const int TSEER_REGISTRY_ETCD_RET_ERROR = 2503;//调用etcd出现内部错误 
+	const int TSEER_REGISTRY_ETCD_DATA_NOTFOUND = 2504;//etcd不存在指定的数据
+	const int TSEER_REGISTRY_ETCD_SEND_REQ_FAIL = 2505;//向etcd服务发起网络请求失败
+};
+

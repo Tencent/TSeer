@@ -1,0 +1,71 @@
+/*************************************************************
+* 文件定义了api向 TseerAgent通信需的数据类型
+*************************************************************/
+
+module Tseer
+{
+	//获取方式
+	enum LB_GET_TYPE
+	{
+		GET_IDC,				//按IDC
+		GET_SET,				//按set
+		GET_ALL,				//全部获取
+	};
+	
+	enum LB_TYPE
+	{
+		LB_TYPE_LOOP,
+		LB_TYPE_RANDOM,
+		LB_TYPE_STATIC_WEIGHT,
+		LB_TYPE_CST_HASH,
+		LB_TYPE_ALL
+	};
+	
+	//向Agent查询服务节点的数据结构
+	struct AgentRouterRequest
+	{
+		1 optional LB_GET_TYPE				getType;		//获取方式，必填
+		2 optional LB_TYPE					lbType;			//负载均衡方式，按照需要填写
+		3 optional string					obj;			//请求服务路由名称，必填
+		4 optional string					setname;		//set信息，当按照SET方式获取时必填
+		6 optional string					apiVer;		    //API的版本号的版本号，选填
+		7 optional long						hashKey;		//hash key，选择哈希负载均衡时必填
+		8 optional string					identifier;	    //进程号，用于区分客户端,必填
+	};
+
+    //服务节点信息
+    struct RouterNodeInfo
+    {
+      1 optional string ip;		    //服务ip地址
+      2 optional int  	port;		//端口
+      3 optional bool   isTcp;		//是否使用TCP，否则为UDP
+      4 optional int    weight;	    //静态权重
+	  5 optional string setname;    //set信息，只当节点开启了set才有
+    };
+	
+	//从Agent获取服务节点的数据结构
+	struct AgentRouterResponse
+	{
+		1 optional LB_GET_TYPE				getType;					//获取方式（已废弃）
+		2 optional string					obj;						//服务路由名称
+		3 optional string					setname;						//set信息
+		4 optional vector<RouterNodeInfo>	resultList;					//服务节点信息
+	};
+	
+	//上报调用状态的数据结构
+	struct NodeStat {
+		1 optional string					localIp;			//本机ip
+		2 optional int						timeCost;			//调用耗时
+		3 optional int						ret;				//调用返回错误码
+		4 optional string					moduleName;		    //主调模块名称
+		5 optional string					ip;				    //被调服务ip
+		6 optional int						port;				//被调服务port
+		7 optional string					obj;				//被调服务路由名称
+		8 optional bool						isTcp;				//是否使用TCP，false为UDP
+		9 optional string					setname;			//set信息
+		10 optional string					apiVer;			    //API的版本号的版本号，选填
+		11 optional LB_TYPE 				lbType;				//负载均衡方式
+		12 optional LB_GET_TYPE				getType;			//获取方式
+		13 optional string					identifier;		    //进程号，用于区分客户端
+	};
+};

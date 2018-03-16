@@ -1,0 +1,212 @@
+#include "QueryF.tars"
+
+module Tseer
+{
+    struct AdapterDescriptor
+    {
+        0 require string adapterName;
+        1 require string threadNum;
+        2 require string endpoint;
+        3 require int maxConnections;
+        4 require string allowIp;
+        5 require string servant;
+        6 require int queuecap;
+        7 require int queuetimeout;
+        9 optional string protocol;
+        10 optional string handlegroup;
+        11 optional int shmkey  = 0;    
+        12 optional int shmcap  = 0; 
+    };
+
+    struct ServerDescriptor
+    {
+        0 require string application;
+        1 require string serverName;
+        2 require string nodeName;
+        3 require string basePath;
+        4 require string exePath;
+        5 require string settingState;
+        6 require string presentState;
+        7 require string profile;
+        8 require string patchVersion;
+        9 require string patchTime;
+        10 require string patchUser;
+        11 require map<string, AdapterDescriptor> adapters;
+        12 optional string serverType;
+        13 optional string startScript;
+        14 optional string stopScript;
+        15 optional string monitorScript;
+        16 optional int configCenterPort;
+		17 optional int asyncThreadNum;
+		18 optional string setId;
+    };
+
+    struct ObjectName
+    {
+        0 require string ObjectId;
+    };
+
+    struct ObjectItem
+    {
+        0 require vector<Tseer::EndpointF> vActiveEndpoints;
+        1 require vector<Tseer::EndpointF> vInactiveEndpoints;
+    };
+    
+	//主控idc分组信息结构，用来缓存信息
+	struct ServerGroupRule
+	{
+		0 require vector< map<string,string> >  vGroupRuleInfo;
+	};
+
+    //agent检查是否需要更新版本号的请求包
+	struct PackageInfo
+	{
+		0 require string version;                      /* 操作系统下的小版本号 */
+		1 require string md5;                          /* 文件md5 */
+		2 require string packageName;                     /* 文件名 */
+		3 require string ostype;                    /* 操作系统版本 */
+		4 require string netID;                        /* 网络id */
+		5 require string ip;                      /* 内网ip,agent安装的ip地址 */
+		6 require bool gray = false;                   /* 是否灰度 服务端带回给客户端 客户端拉包时使用 */
+	};
+
+    //agent下载更新包的请求参数
+	struct UpdateReq
+	{
+		0 require string version;                          /* 操作系统下的小版本号 */
+		1 require int offset;                          /* 加载偏移量 */
+		2 require string packageName;                     /* 文件名 */
+		3 require string ostype;                    /* 操作系统版本 */
+		4 require bool gray;                           /* 是否拉取的是灰度包 */
+		5 optional string netID;                       /* 网络id 日志使用 */
+		6 optional string ip;                      /* 内网ip 日志使用 */
+	};
+
+	struct UpdateRsp
+	{
+		0 require bool finish;                         /* 是否分片数据结束 */
+		1 require int offset;                          /* 偏移量 */
+		2 require string buff;                         /* 数据 */
+		3 require string packageName;                     /* 文件名 xxx_osver_verver.tgz */
+		4 optional bool needChange = false;            /* 是否需要重新check版本 */
+	};
+
+
+	/**
+	 * 上传发布包到服务器的结构参数
+	 */
+	struct PushPackageInfo
+	{
+		/**
+		 * 文件名称，类似
+		 * 包名字_日期_OS_版本号_md5.tgz
+		 *
+		 */
+		0 require string packageName;
+		/**
+		 * 文件总大小,字节数
+		 *
+		 */
+		1 require long size;
+		/**
+		 * 该文件的MD5值
+		 */
+		2 require string md5;
+		/**
+		 * 本次发送数据流
+		 */
+		3 require vector < byte > vb;
+		/**
+		 * 本次传输的起始位置,默认是从0开始传
+		 *
+		 */
+		4 require long pos = 0;
+		/**
+		 * 发布包版本号,比如v1.05
+		 */
+		5 optional string version;
+		/**
+		 * 发布支持的操作系统版本号
+		 */
+		6 optional string ostype = "CentOs-6.5-64";
+        
+		/**
+		 * 发布包升级类型:灰度1/正式2,默认为0，不做任何动作
+		 */
+		7 optional int package_type=0;
+        /**
+         * 上传发布者
+         */
+		9 optional string user="";
+	};
+
+    //node负载信息定义
+    struct LoadInfo
+    {
+        //过去1分钟负载
+        0 require  float avg1;
+        //过去5分钟负载
+        1 require  float avg5;
+        //过去15分钟负载
+        2 require  float avg15;
+        // 1分钟内cpu使用率均值
+        3 optional int   avgCpu;
+    };
+
+    //node本身信息数据
+    struct NodeInfo
+    {
+        0 require string nodeName;
+        1 require string nodeObj;
+        2 require string endpointIp;
+        3 require int endpointPort;
+        4 require short timeOut;
+        5 require string dataDir;
+        6 optional string version;
+        //启动tarsnode时，从start.tmp获取，设置的core大小,core file size,因为可能值为unlimited
+        7 optional string  coreFileSize;
+        //启动tarsnode时，从start.tmp获取，设置的open files
+        8 optional int	openFiles;
+        9 require int cpu_num;
+        10 require int cpu_hz;
+        11 require long memory_size;
+        12 require int docker_node_version; 
+    };
+
+    struct NodeInstanceInfo
+    {
+    	0 require string nodeName;         /*机器ip地址*/
+    	1 optional string nodeObj;         /*node管理接口的endpoint=obj@tcp -h xx -p yy*/
+    	2 optional string endpointIp;      /**/
+    	3 optional int endpointPort;
+    	4 optional string version;       /*agent软件版本号*/
+    	5 optional string osversion;     /*agent所在机器的操作系统版本号*/
+    	6 optional string locator;      /*agent目前的路由服务中心地址*/
+    };
+    
+    enum ServerState
+    {
+        Inactive,
+        Activating,
+        Active,
+        Deactivating,
+        Destroying,
+        Destroyed
+    };
+    
+    struct ServerStateInfo
+    {
+		//present state
+        0 require ServerState serverState;
+        1 require int processId;
+        2 require string nodeName;
+        3 require string application;
+        4 require string serverName;
+        5 require string containerName;
+        6 require string moduleType;
+		//setting states
+		7 optional ServerState settingState;
+		8 require string servant;
+		9 require int endpointPort;
+    };
+};

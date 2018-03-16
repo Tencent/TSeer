@@ -1,0 +1,3 @@
+## ----------------------- Standard Logs -------------------------- ##
+local=DEBUG,/data/log/seer/local.log
+

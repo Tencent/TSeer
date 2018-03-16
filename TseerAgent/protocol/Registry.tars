@@ -1,0 +1,90 @@
+
+module Tseer
+{
+    struct NodeInstanceInfo
+    {
+    	0 require string nodeName;         /*机器ip地址*/
+    	1 optional string nodeObj;         /*node管理接口的endpoint=obj@tcp -h xx -p yy*/
+    	2 optional string endpointIp;      /**/
+    	3 optional int endpointPort;
+    	4 optional string version;       /*agent软件版本号*/
+    	5 optional string osversion;     /*agent所在机器的操作系统版本号*/
+    	6 optional string locator;      /*agent目前的路由服务中心地址*/
+    };
+	
+    //agent检查是否需要更新版本号的请求包
+	struct PackageInfo
+	{
+		0 require string version;                      /* 操作系统下的小版本号 */
+		1 require string md5;                          /* 文件md5 */
+		2 require string packageName;                     /* 文件名 */
+		3 require string ostype;                    /* 操作系统版本 */
+		4 require string netID;                        /* 网络id */
+		5 require string ip;                      /* 内网ip,agent安装的ip地址 */
+		6 require bool gray = false;                   /* 是否灰度 服务端带回给客户端 客户端拉包时使用 */
+	};
+
+    //agent下载更新包的请求参数
+	struct UpdateReq
+	{
+		0 require string version;                          /* 操作系统下的小版本号 */
+		1 require int offset;                          /* 加载偏移量 */
+		2 require string packageName;                     /* 文件名 */
+		3 require string ostype;                    /* 操作系统版本 */
+		4 require bool gray;                           /* 是否拉取的是灰度包 */
+		5 optional string netID;                       /* 网络id 日志使用 */
+		6 optional string ip;                      /* 内网ip 日志使用 */
+	};
+
+	struct UpdateRsp
+	{
+		0 require bool finish;                         /* 是否分片数据结束 */
+		1 require int offset;                          /* 偏移量 */
+		2 require string buff;                         /* 数据 */
+		3 require string packageName;                     /* 文件名 xxx_osver_verver.tgz */
+		4 optional bool needChange = false;            /* 是否需要重新check版本 */
+	};
+
+	
+    /**
+     * registry接口
+     */
+    interface Registry
+    {
+        /**
+         * node启动的时候往registry注册一个session
+         *
+         * @param nodeInfo 注册信息
+         *
+         * @return 注册是否成功
+         */
+        int registerNodeExt(NodeInstanceInfo nodeInfo);
+
+		
+        /**
+         * node上报心跳及机器负载
+         *
+         * @param nodeName    node名称
+         * @param load    node机器负载信息
+         */
+        int keepAliveExt(NodeInstanceInfo nodeInfo);
+
+		/**
+    	 * 检查agent是否有更新
+    	 * @param reqInfo  要检查的agent相关版本信息
+    	 * @param rspinfo  目前最新的包版本信息返回
+    	 * @return 0-成功 others-失败
+    	 */
+		int checkChange(PackageInfo reqInfo, out PackageInfo rspinfo);
+
+		/**
+		 * 更新agent发布包的接口
+		 * @param req 要请求的具体包信息
+		 * @param rsp 响应的发布包信息
+		 * @return 0-成功 others-失败
+		 */
+		int updatePacket(UpdateReq req, out UpdateRsp rsp);
+    };
+
+};
+
