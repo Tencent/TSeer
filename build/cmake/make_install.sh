@@ -5,6 +5,7 @@ cmake_args=$@
 
 install_path=`echo $cmake_args | tr -s ' ' '\n' | awk -F= '/INSTALL/{print $2}'`
 
+cp CMakeLists.txt ../
 echo "[INFO] $TIMESTAMP start build tseer..."
 yum install gcc make gcc-c++ -y &>/dev/null
 cd ..

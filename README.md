@@ -8,7 +8,7 @@ Tseer拥有web管理界面和API接入两种方式可供用户根据需求自由
 
 同时Tseer轻巧灵便，以旁路模式工作，对业务的侵入性突破业内新低，无论新业务还是已经运行的业务都十分适用，极其友好。是微服务框架和分布式服务集群实现服务发现的优秀解决方案。
 
-产品详细说明文档参见[Seer产品介绍](http://git.code.oa.com/tseer/tseer/blob/master/Introduction.md)
+产品详细说明文档参见[Seer产品介绍](Introduction.md)
 
 ## 支持平台
 

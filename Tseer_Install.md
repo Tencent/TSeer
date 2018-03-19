@@ -54,7 +54,7 @@ Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源
 
 ### 下载源码
 
-使用git下载：git clone http://git.code.oa.com/TSeer/TSeer.git
+使用git下载：git clone https://github.com/Tencent/TSeer.git
 
 1. 编辑配置文件: vim build/tseer_deploy.ini,修改install_type=source,使用源码安装方式（详细用法请参考章节4,编辑好之后再执行第二步）
 2. 执行安装：cd build; python tseer_deploy.py
