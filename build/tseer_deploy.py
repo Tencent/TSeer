@@ -126,15 +126,25 @@ def start_agent():
     tseer_basedir = config_parse('tseer', 'base_dir', '/usr/local/')
     stat = subprocess.call(['./cmake/start_agent.sh', tseer_basedir])
 
+def deploy_tars():
+    print '[INFO] %s Starting deploy tars...' % TIME_STAMP
+    tmp_rst = execute_script(script='./cmake/deploy_tars.sh')['localhost']
+    stat, rst = tmp_rst['stat'], tmp_rst['rst']
+    if not stat:
+        sys.exit(1)
+    else:
+        print '[INFO] %s Deploy tars success!' % TIME_STAMP
+
 
 def main():
+    deploy_tars()
+
     print "[INFO] %s Starting deploy tseer..." % TIME_STAMP
     install_type = config_parse('tseer', 'install_type', 'bin')
     storage = config_parse('tseer', 'storage', 'etcd')
-    if storage == 'etcd':
-        deploy_etcd()
-    else:
-        deploy_mysql()
+    
+    deploy_etcd()
+
     if install_type == "bin":
         local_install()
     else:

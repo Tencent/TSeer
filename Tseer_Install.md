@@ -12,7 +12,6 @@ cmake版本：       	|   2.8.8及以上版本（c++语言框架依赖,源码编
 resin版本：       	|   4.0.49及以上版本（web管理系统依赖,源码编译依赖）
 Java JDK版本：      | 	web管理系统（最低1.8）
 Maven版本：			|   2.2.1及以上版本（web管理系统、java语言框架依赖）
-mysql版本:          |   4.1.17及以上版本（框架运行依赖,选择mysql方式的源码编译依赖）
 rapidjson版本:      |   1.0.2版本（c++语言框架依赖,源码编译依赖）
 
 运行服务器要求：1台普通安装linux系统的机器即可。
@@ -79,7 +78,6 @@ bind_ip=localhost
 ```
 
 - install_type 安装方式：  源码安装选择source，将会进行编译安装； 二进制安装则直接使用git上已经编译好的binary包安装。
-- storage 数据存储介质： 路由数据等可以存放在etcd、或者mysql。选择mysql脚本将自动安装mysql的相关依赖。
 - base_dir 安装路径：服务将安装你指定目录下的tseer目录。
 - bind_ip TseerServer/TseerAgent监听地址：默认是本机的IP。
 
@@ -112,6 +110,7 @@ apiport=9904
 ;host_list=localhost
 client_port=2379
 cluster_port=2380
+base_dir=/data/test/etcd/
 ```
 
 - host_list:  部署etcd的主机列表，默认启动三个etcd实例。远程安装依赖paramiko库，请自行安装。
@@ -120,81 +119,14 @@ cluster_port=2380
 
 其中etcd member名字默认是`tseer_etcd`加上序号，不可配置
 
-#### 4.3.2 Mysql配置
 
-如果你选择mysql作为存储介质，脚本将自动安装配置
-
-```ini
-[mysql]
-; if you choose mysql as storage medium, should install mysql
-; install_type: yum, source; default yum.
-install_type=yum
-base_dir=/usr/local/mysql/
-```
-
-- install_type: Mysql安装方式，支持yum安装、source源码安装， 默认使用yum安装。
-- base_dir:  Mysql的基础路径。
-
-
-## 5. 开始体验tseer
-
-### 5.1 访问管理平台
-
-resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080即可（ip替换成真实绑定的ip）
-
-
-### 5.2 添加路由数据
-
-- 在页面右上角，点击`业务集列表`
-
-![endpoint](docs/images/group.png)
-
-- 进入后点击`添加业务集`，输入业务集名称
-
-![endpoint](docs/images/addgroup.png)
-
-- 添加模块
-
-![endpoint](docs/images/addmodule.png)
-
-- 添加具体路由对象
-
- tseer的路由名称是四段式的：业务集.业务名.服务名.端口名，添加业务集时已经确认了业务集名字，
- 在添加模块时候，还需要填写剩下的三段名字。如图所示，填写的业务名是app，服务名是server，端口名是helloobj
-
-![endpoint](docs/images/module.png)
-
-
-### 5.3 使用API获取路由数据
-
-tseer提供C++、JavaAPI， 路径放在预设安装路径下的api目录下
-
-如何使用，请查看相应API使用教程和实例。
-
-例1：执行默认测试程序
-- 到api/cplus 目录下执行 cmake .;make;make tar
-- 在test目录得到testapi测试工具，在当前目录下执行./testapi 默认就可以测试上面安装结果是否成功
-- 默认测试结果如下：
-```
-[root@xxxx ~/tseer/api/cplus/test]$ ./testapi 
-obj:Tseer.TseerServer.RegistryObj
-type:0
-lbtype:0
-set:
-pureApi:false
-dns:localhost
-cnt:5
-thread nu:1
-30317|ip:127.0.0.1|port:9902|tcp:true|ret:0|
-```
-
-## 6. 其它问题
-
-### 6.1 部署web平台
+## 5. 部署web平台
 
 一键安装脚本中并不包括web平台的部署,需手动操作,这里补充如下:
 
-将resin包解压在build/webadmin目录下,或者任意目录
+
+从[这里](http://caucho.com/download/resin-4.0.49.tar.gz)下载resin安装包。
+将resin包解压在build/webadmin目录下
 
 ```
 cd build/webadmin
@@ -228,3 +160,55 @@ vim webapps/seer-1.0.0-SNAPSHOT/WEB-INF/classes/system.properties
 将seer.api.url和seer.agent.onekey.install.url的值修改成你部署的TseerServer监听ip及4.2节配置的apiport
 最后重启resin即可
 
+
+## 6. 开始体验tseer
+
+### 6.1 访问管理平台
+
+resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080即可（ip替换成真实绑定的ip）
+
+
+### 6.2 添加路由数据
+
+- 在页面右上角，点击`业务集列表`
+
+![endpoint](docs/images/group.png)
+
+- 进入后点击`添加业务集`，输入业务集名称
+
+![endpoint](docs/images/addgroup.png)
+
+- 添加模块
+
+![endpoint](docs/images/addmodule.png)
+
+- 添加具体路由对象
+
+ tseer的路由名称是四段式的：业务集.业务名.服务名.端口名，添加业务集时已经确认了业务集名字，
+ 在添加模块时候，还需要填写剩下的三段名字。如图所示，填写的业务名是app，服务名是server，端口名是helloobj
+
+![endpoint](docs/images/module.png)
+
+
+### 6.3 使用API获取路由数据
+
+tseer提供C++、JavaAPI， 路径放在预设安装路径下的api目录下
+
+如何使用，请查看相应API使用教程和实例。
+
+例1：执行默认测试程序
+- 到api/cplus 目录下执行 cmake .;make;make tar
+- 在test目录得到testapi测试工具，在当前目录下执行./testapi 默认就可以测试上面安装结果是否成功
+- 默认测试结果如下：
+```
+[root@xxxx ~/tseer/api/cplus/test]$ ./testapi 
+obj:Tseer.TseerServer.RegistryObj
+type:0
+lbtype:0
+set:
+pureApi:false
+dns:localhost
+cnt:5
+thread nu:1
+30317|ip:127.0.0.1|port:9902|tcp:true|ret:0|
+```
