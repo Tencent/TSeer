@@ -90,7 +90,7 @@ class Vssh(object):
         return rst
 
 
-def run_local_script(script, args, interpreter='sh'):
+def run_local_script(script, args, interpreter='bash'):
     cmd = '%s %s %s' % (interpreter, script, args)
     stat, rst = getstatusoutput(cmd)
     return stat == 0, rst

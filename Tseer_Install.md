@@ -16,14 +16,15 @@ rapidjson版本:      |   1.0.2版本（c++语言框架依赖,源码编译依赖
 
 运行服务器要求：1台普通安装linux系统的机器即可。
 
-## 0. 安装依赖Tars
+## 0. Tars
    TSeer依赖[Tars](https://github.com/Tencent/Tars).
-   在源码一键安装中已经包括了Tars的自动下载编译安装，所以不需要你关心Tars的部署。
+   在源码一键安装中已经包括了Tars的自动下载和编译安装，所以**不需要**你关心Tars的部署。
+
    但如果使用二进制安装，则需要下载Tars源码，并进入cpp/build目录下,
    执行./build.sh all; ./build.sh install即可
    由于不需要安装部署tars的框架服务，比如tarsnode等等，所以安装还是比较简单快速。
 
-   **注意:** 编译Tars需要提前安装好flex和bison.
+   **注意:** 源码编译Tars需要提前安装好flex和bison.
 
 ## 1. 安装方式选择
 
@@ -33,11 +34,11 @@ Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源
 
 #### 二进制安装
 
-需要预先安装python，确保机器网络正常.
+需要预先安装python, gcc, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
 
 #### 源码安装
 
-需要预先安装python, gcc, cmake，确保机器网络正常，能够git克隆github的仓库.
+需要预先安装python, gcc, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
 
 ## 2. 二进制安装
 
@@ -48,7 +49,7 @@ Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源
 3. 到etcd官方网站下载etcd二进制安装包,包名是etcd-v3.2.5-linux-amd64.tar.gz,[点此立即下载](https://github.com/coreos/etcd/releases/download/v3.2.5/etcd-v3.2.5-linux-amd64.tar.gz),并放到build/etcd目录下
 4. 到resin官网下载resin二进制安装包，包名是resin-4.0.49.tar.gz,[点此立即下载](http://www.caucho.com/download/resin-4.0.49.tar.gz),并放到build/webadmin目录下
 5. 执行安装：cd build; python tseer_deploy.py
-6. 安装完成之后可以参考章节五进行tseer产品的体验了！！
+6. 安装完成之后可以参考章节六进行tseer产品的体验了！！
 
 ## 3. 源码安装
 
@@ -182,7 +183,7 @@ vim webapps/seer-1.0.0-SNAPSHOT/WEB-INF/classes/system.properties
 
 ### 6.1 访问管理平台
 
-resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080即可（ip替换成真实绑定的ip）
+resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080 即可（ip替换成真实绑定的ip）
 
 
 ### 6.2 添加路由数据
