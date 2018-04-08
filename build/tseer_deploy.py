@@ -159,7 +159,7 @@ def main():
     time.sleep(2)
     start_agent()
     print "[SUCC] %s Successfully deploy tseer. Enjoy it~" % TIME_STAMP
-    print "[SUCC] %s If there is something wrong, please check seer_make.log~" % TIME_STAMP
+    print "[SUCC] %s If there is something wrong, please check tseer_make.log~" % TIME_STAMP
 
 
 if __name__ == '__main__':

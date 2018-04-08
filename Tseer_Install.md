@@ -1,4 +1,4 @@
-# tseer 安装指引
+# TSeer 安装指引
 
 ## 依赖环境
 
@@ -17,13 +17,19 @@ rapidjson版本:      |   1.0.2版本（c++语言框架依赖,源码编译依赖
 运行服务器要求：1台普通安装linux系统的机器即可。
 
 ## 0. 安装依赖Tars
-   从[github](https://github.com/Tencent/Tars)下载Tars源码.
-   进入cpp/build目录下，执行./build.sh all; ./build.sh install即可
-   并不需要安装部署tars的框架服务，比如tarsnode等等，所以安装还是比较简单快速。
+   TSeer依赖[Tars](https://github.com/Tencent/Tars).
+   在源码一键安装中已经包括了Tars的自动下载编译安装，所以不需要你关心Tars的部署。
+   但如果使用二进制安装，则需要下载Tars源码，并进入cpp/build目录下,
+   执行./build.sh all; ./build.sh install即可
+   由于不需要安装部署tars的框架服务，比如tarsnode等等，所以安装还是比较简单快速。
+
+   **注意:** 编译Tars需要提前安装好flex和bison.
 
 ## 1. 安装方式选择
 
 Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源码编译方式。二进制安装方便快速部署，源码安装可定制性强。
+
+**注意:** 安装过程中需要使用wget和curl等工具.
 
 #### 二进制安装
 
@@ -71,7 +77,7 @@ Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源
 ; binary install: place binary executable to your set base path
 ; source install: depend tars
 install_type=bin
-; storage: etcd, mysql. data storage.
+; storage: etcd, data storage.
 storage=etcd
 base_dir=/usr/local/
 bind_ip=localhost
@@ -81,7 +87,7 @@ bind_ip=localhost
 - base_dir 安装路径：服务将安装你指定目录下的tseer目录。
 - bind_ip TseerServer/TseerAgent监听地址：默认是本机的IP。
 
-### 4.2 tseerServer配置：
+### 4.2 tseer server配置：
 
 ```ini
 [tseer_server]
@@ -101,7 +107,6 @@ apiport=9904
 
 
 #### 4.3.1 Etcd配置
-如果你选择etcd作为存储介质，脚本将自动安装配置
 
 ```ini
 [etcd]
@@ -125,21 +130,33 @@ base_dir=/data/test/etcd/
 一键安装脚本中并不包括web平台的部署,需手动操作,这里补充如下:
 
 
-从[这里](http://caucho.com/download/resin-4.0.49.tar.gz)下载resin安装包。
+先从[这里](http://caucho.com/download/resin-4.0.49.tar.gz)下载resin安装包。
 将resin包解压在build/webadmin目录下
 
 ```
 cd build/webadmin
 tar xvf resin-4.0.49.tar.gz
+mv resin-4.0.49 resin
 ```
 
-生成我们的war包,执行下面命令后，可以在target目录下看到`seer-1.0.0-SNAPSHOT.war`文件,
+现在开始生成我们的war包:执行下面命令后,可以在target目录下看到`seer-1.0.0-SNAPSHOT.war`文件,
 将其拷贝到resin的webapps目录下
 
 ```
-cd web  # 源码web目录下有pom.xml文件
+cd web  # 进入到源码web目录下,有pom.xml文件,准备执行mvn命令
 mvn clean
 mvn install
+cp target/seer-1.0.0-SNAPSHOT.war ../build/resin/webapps/ 
+```
+
+设置resin运行入口
+
+```
+vi conf/resin.xml
+
+在这句注释下面`webapps can be overridden/extended in the resin.xml`
+替换添加
+<web-app id="/" root-directory="webapps/seer-1.0.0-SNAPSHOT"/>
 ```
 
 启动resin
@@ -192,23 +209,7 @@ resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080�
 
 ### 6.3 使用API获取路由数据
 
-tseer提供C++、JavaAPI， 路径放在预设安装路径下的api目录下
+tseer提供C++、Java的API,路径放在预设安装路径下的api目录下
 
-如何使用，请查看相应API使用教程和实例。
+如何使用，请查看相应API使用教程和实例
 
-例1：执行默认测试程序
-- 到api/cplus 目录下执行 cmake .;make;make tar
-- 在test目录得到testapi测试工具，在当前目录下执行./testapi 默认就可以测试上面安装结果是否成功
-- 默认测试结果如下：
-```
-[root@xxxx ~/tseer/api/cplus/test]$ ./testapi 
-obj:Tseer.TseerServer.RegistryObj
-type:0
-lbtype:0
-set:
-pureApi:false
-dns:localhost
-cnt:5
-thread nu:1
-30317|ip:127.0.0.1|port:9902|tcp:true|ret:0|
-```

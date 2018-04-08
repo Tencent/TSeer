@@ -14,6 +14,8 @@ def execute_script(script, args=' ', remote=False, ip_list=None):
         return ssh_obj.remote_execute_scipt(script, args)
     else:
         stat, rst = run_local_script(script, args)
+        if not stat:
+            print rst
         return {'localhost': {'stat': stat, 'rst': rst}}
 
 
@@ -39,7 +41,7 @@ class Vssh(object):
             if ip == host:
                 return user, passwd
 
-    def remote_execute_scipt(self, script, args='', interpreter='sh'):
+    def remote_execute_scipt(self, script, args='', interpreter='bash'):
         rst = {}
         cmd = '%s %s %s' %(interpreter, args, script)
         origin_ip_list = self.ip_list
