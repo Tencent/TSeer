@@ -27,8 +27,11 @@ def get_os_info():
     return dist
 
 
-def install_seeragent(prefix):
-    os_version = get_os_info()
+def install_seeragent(prefix, os_version):
+    if not os_version:
+        os_version = get_os_info()
+
+    print(os_version)
     if not os.path.exists('%s.tgz' % os_version):
         get_pkg_cmd = "wget -q %s%s -O %s.tgz" % (PKG_URL, os_version, os_version)
         stat, rst = execute_cmd(get_pkg_cmd)
@@ -102,7 +105,7 @@ def change_conf(prefix,innerip=""):
 
 
 def start_service(prefix):
-    start_cmd = "sh %s/Tseer/TseerAgent/util/start.sh" % prefix
+    start_cmd = "bash %s/Tseer/TseerAgent/util/start.sh" % prefix
     stat, rst = execute_cmd(start_cmd)
     if not stat:
         print "[ERROR] %s Start TseerAgent Failed." % TIME_STAMP
@@ -124,14 +127,17 @@ def add_monitor(prefix):
 if __name__ == '__main__':
     usage = "usage: python %prog --prefix=/usr/local"
     parser = optparse.OptionParser(usage=usage, version="%prog 1.0")
-    parser.add_option("-p", "--prefix", dest='prefix', default="/usr/local/", type="string",
+    parser.add_option("-o", "--os", dest='osversion', default="CentOs-6.5-64", type="string",
+                      help=u"os-version like CentOs-6.5-64")
+    parser.add_option("-p", "--prefix", dest='prefix', default=os.getcwd(), type="string",
                       help=u"install path")
     parser.add_option("-i", "--innerip", dest='innerip', default="", type="string",
                       help=u"ip,local inner ip")
     options, args = parser.parse_args()
+    ov = options.osversion
     prefix = options.prefix
     innerip = options.innerip
-    install_seeragent(prefix)
+    install_seeragent(prefix, ov)
     change_conf(prefix,innerip)
     start_service(prefix)
     add_monitor(prefix)

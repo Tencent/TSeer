@@ -16,40 +16,21 @@ rapidjson版本:      |   1.0.2版本（c++语言框架依赖,源码编译依赖
 
 运行服务器要求：1台普通安装linux系统的机器即可。
 
-## 0. Tars
-   TSeer依赖[Tars](https://github.com/Tencent/Tars).
-   在源码一键安装中已经包括了Tars的自动下载和编译安装，所以**不需要**你关心Tars的部署。
-
-   但如果使用二进制安装，则需要下载Tars源码，并进入cpp/build目录下,
-   执行./build.sh all; ./build.sh install即可
-   由于不需要安装部署tars的框架服务，比如tarsnode等等，所以安装还是比较简单快速。
-
-   **注意:** 源码编译Tars需要提前安装好flex和bison.
-
 ## 1. 安装方式选择
 
-Tseer和其他优秀开源软件一样，我们提供二进制安装方式和源码编译方式。二进制安装方便快速部署，源码安装可定制性强。
+Tseer暂时只提供源码编译方式安装,可定制性强,由于一键安装脚本的便捷,安装并不麻烦。
 
 **注意:** 安装过程中需要使用wget和curl等工具.
-
-#### 二进制安装
-
-需要预先安装python, gcc, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
 
 #### 源码安装
 
 需要预先安装python, gcc, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
 
-## 2. 二进制安装
+## 2. Tars
+   TSeer依赖[Tars](https://github.com/Tencent/Tars).
+   在源码一键安装中已经包括了Tars的自动下载和编译安装，所以**不需要**你关心Tars的部署。
 
-#### 下载二进制安装包 tseer-1.0.0.tar.gz
-
-1. 解压文件: tar xf tseer-1.0.0.tar.gz 
-2. 编辑解压目录下的配置文件：vim build/tseer_deploy.ini;配置文件详情第4节介绍（主要修改base_dir，其它用默认值就可以了）
-3. 到etcd官方网站下载etcd二进制安装包,包名是etcd-v3.2.5-linux-amd64.tar.gz,[点此立即下载](https://github.com/coreos/etcd/releases/download/v3.2.5/etcd-v3.2.5-linux-amd64.tar.gz),并放到build/etcd目录下
-4. 到resin官网下载resin二进制安装包，包名是resin-4.0.49.tar.gz,[点此立即下载](http://www.caucho.com/download/resin-4.0.49.tar.gz),并放到build/webadmin目录下
-5. 执行安装：cd build; python tseer_deploy.py
-6. 安装完成之后可以参考章节六进行tseer产品的体验了！！
+   **注意:** 源码编译Tars需要提前安装好flex和bison.
 
 ## 3. 源码安装
 
@@ -140,6 +121,26 @@ tar xvf resin-4.0.49.tar.gz
 mv resin-4.0.49 resin
 ```
 
+修改查询路由的地址
+```
+cd web # 进入到源码的web目录下
+vi src/main/resources/seer.conf
+```
+将locator的地址改为你所配置的tseer绑定地址及queryport号，默认端口是9903
+
+
+修改配置中TSeer服务地址，修改方法如下
+```
+cd web # 进入到源码的web目录下
+vi src/main/resources/system.properties
+```
+将seer.api.url和seer.agent.onekey.install.url的值修改成你部署的TseerServer监听ip及4.2节配置的apiport
+
+例如，如果tseer的bind_ip配置的是localhost,端口是9904,那么这样修改即可：
+`seer.api.url=http://127.0.0.1:9904/v1/interface`
+
+
+
 现在开始生成我们的war包:执行下面命令后,可以在target目录下看到`seer-1.0.0-SNAPSHOT.war`文件,
 将其拷贝到resin的webapps目录下
 
@@ -164,25 +165,6 @@ vi conf/resin.xml
 在resin目录下，执行
 
 ```
-./bin/resin.sh start
-```
-
-注意，可能需要修改war包中配置的TSeer服务地址，修改方法如下
-
-```
-cd resin # 进入到resin目录下
-vi webapps/seer-1.0.0-SNAPSHOT/WEB-INF/classes/system.properties
-```
-
-将seer.api.url和seer.agent.onekey.install.url的值修改成你部署的TseerServer监听ip及4.2节配置的apiport
-
-例如，如果tseer的bind_ip配置的是localhost,端口是9904,那么这样修改即可：
-`seer.api.url=http://127.0.0.1:9904/v1/interface`
-
-最后重启resin:
-
-```
-./bin/resin.sh stop
 ./bin/resin.sh start
 ```
 
@@ -221,4 +203,36 @@ resin默认端口是8080，所以在你的浏览器输入 http://127.0.0.1:8080 
 tseer提供C++、Java的API,路径放在预设安装路径下的api目录下
 
 如何使用，请查看相应API使用教程和实例
+
+
+## 7. 安装TseerAgent
+
+一键脚本默认安装启动了TseerAgent进程，但是如果你还要在其它机器部署服务，那就需要自行安装了.
+
+一键脚本在源码的build目录已经打包好了后缀为tgz的agent包，首先需要上传。
+
+### 7.1 web页面操作上传添加agent安装包
+
+- 在web页面右上方选择`发布包管理`，然后在左侧选择上传发布包，如下图.
+
+![uploadagent](docs/images/uploadagent.png)
+
+### 7.2 web页面操作生成下载agent的命令
+
+- 在web页面右上方选择`Agent安装工具`，填入目标机器IP，生成命令后，复制并在目标机器上粘贴执行。
+生成的命令类似于：
+
+```
+wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.17.89.35
+```
+  其中10.17.89.41是你执行一键脚本所在的机器，innerip则是你的目标机器
+
+  **注意** 一般来说还需要指定os版本,格式形如CentOs-7.2-64,不然无法下载agent包。所以最终命令如下
+```
+wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.17.89.35 --osversion=CentOs-7.2-64
+```
+
+### 7.3 登陆目标机器，执行命令
+
+   执行命令完成后，使用ps命令或netstat查看agent进程是否启动成功
 

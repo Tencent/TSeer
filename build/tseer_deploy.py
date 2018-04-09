@@ -135,6 +135,13 @@ def deploy_tars():
     else:
         print '[INFO] %s Deploy tars success!' % TIME_STAMP
 
+def patch_agent():
+    tseer_basedir = config_parse('tseer', 'base_dir', '/usr/local/')
+    args = "%s" % (tseer_basedir)
+    tmp_rst = execute_script(script='./patchagent.sh', args=args)['localhost']
+    stat, rst = tmp_rst['stat'], tmp_rst['rst']
+    if not stat:
+        print rst
 
 def main():
     deploy_tars()
@@ -158,6 +165,9 @@ def main():
     start_server()
     time.sleep(2)
     start_agent()
+
+    patch_agent()
+
     print "[SUCC] %s Successfully deploy tseer. Enjoy it~" % TIME_STAMP
     print "[SUCC] %s If there is something wrong, please check tseer_make.log~" % TIME_STAMP
 

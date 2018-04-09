@@ -3,7 +3,7 @@
 ETCD_VER=v3.2.5
 DOWNLOAD_URL="https://github.com/coreos/etcd/releases/download"
 TIMESTAMP=`date "+%F %T"`
-ETCD_TMPDIR="/data/seer_tmp/"
+ETCD_TMPDIR="$HOME/tseer_tmp/"
 node_name=$1
 node_ip=$2
 cluster_port=$3
