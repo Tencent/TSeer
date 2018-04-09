@@ -204,6 +204,10 @@ tseer提供C++、Java的API,路径放在预设安装路径下的api目录下
 
 如何使用，请查看相应API使用教程和实例
 
+[c++ api](api/cplus/doc/cplus-api-quickstart.md)
+
+[java api](api/java/docs/seer-api-java-quickstart.md)
+
 
 ## 7. 安装TseerAgent
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 IP=`ip a s |awk '/inet/ { if (($2 !~ /127.0.0.1/) && ($2 !~ /::1/)) { print $2} }'| cut -d / -f 1`
 PORT=9765
@@ -8,12 +8,12 @@ BASE_DIR=/usr/local/
 
 stop_server()
 {
-        sh ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
+        bash ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
         sleep 2
-        sh ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
+        bash ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
         ps -ef |grep "${BASE_DIR}/Tseer/TseerAgent/bin/TseerAgent"|grep -v grep >/dev/null 2>&1
         if test $? = 0; then
-                sh ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
+                bash ${BASE_DIR}/Tseer/TseerAgent/util/stop.sh
                 sleep 1
                 ps -ef |grep "${BASE_DIR}/Tseer/TseerAgent/bin/TseerAgent"|grep -v grep >/dev/null 2>&1
                 if test $? = 0; then
@@ -25,7 +25,7 @@ stop_server()
 
 start_server()
 {
-        sh ${BASE_DIR}/Tseer/TseerAgent/util/start.sh
+        bash ${BASE_DIR}/Tseer/TseerAgent/util/start.sh
         sleep 5
         ps -ef |grep  "${BASE_DIR}/Tseer/TseerAgent/bin/TseerAgent"|grep -v grep >/dev/null 2>&1
         if [ "$?" -ne "0" ]; then

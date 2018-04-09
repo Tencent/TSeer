@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PREFIX=$1
+PREFIX=$1/Tseer
 TARGET=TseerAgent
 
 if [ -d ${TARGET}_tmp_dir ]; then 

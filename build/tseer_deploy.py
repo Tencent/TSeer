@@ -147,13 +147,15 @@ def main():
     deploy_tars()
 
     print "[INFO] %s Starting deploy tseer..." % TIME_STAMP
-    install_type = config_parse('tseer', 'install_type', 'bin')
+    install_type = config_parse('tseer', 'install_type', 'source')
     storage = config_parse('tseer', 'storage', 'etcd')
     
     deploy_etcd()
 
     if install_type == "bin":
-        local_install()
+        #local_install()
+        resolve_dependency()
+        cmake_build()
     else:
         resolve_dependency()
         cmake_build()
@@ -162,6 +164,7 @@ def main():
     generate_utils()
     change_sc_or_conf()
 
+    time.sleep(1)
     start_server()
     time.sleep(2)
     start_agent()

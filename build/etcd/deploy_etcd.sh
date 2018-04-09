@@ -3,7 +3,8 @@
 ETCD_VER=v3.2.5
 DOWNLOAD_URL="https://github.com/coreos/etcd/releases/download"
 TIMESTAMP=`date "+%F %T"`
-ETCD_TMPDIR="$HOME/tseer_tmp/"
+ETCD_TMPDIR="/data/tseer_tmp/"
+#ETCD_TMPDIR="$HOME/tseer_tmp/"
 node_name=$1
 node_ip=$2
 cluster_port=$3
@@ -13,6 +14,7 @@ ETCD_WORKDIR=$6
 CDIR=`pwd`
 
 LOCAL_ETCDFILE=`find $CDIR -name "*etcd*.tar.gz"`
+TMP_ETCDFILE=`find $ETCD_TMPDIR -name "*etcd*.tar.gz"`
 
 mkdir -p $ETCD_TMPDIR
 mkdir -p ${ETCD_WORKDIR}/{bin,datadir,log}/
@@ -22,6 +24,8 @@ echo $LOCAL_ETCDFILE
 if [ -n "$LOCAL_ETCDFILE" -a -e "$LOCAL_ETCDFILE" ];then
 	echo "[INFO] $TIMESTAMP we has etcd $LOCAL_ETCDFILE"
 	cp $LOCAL_ETCDFILE $ETCD_TMPDIR
+elif [ -n "$TMP_ETCDFILE" -a -e "$TMP_ETCDFILE" ];then
+	echo "[INFO] $TIMESTAMP we has etcd $TMP_ETCDFILE"
 else
 	LOCAL_ETCDFILE=etcd-${ETCD_VER}-linux-amd64.tar.gz
 	echo "[INFO] $TIMESTAMP Download etcd... $LOCAL_ETCDFILE"
