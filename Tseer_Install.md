@@ -132,10 +132,10 @@ base_dir=/data/test/etcd/
 
 
 先从[这里](http://caucho.com/download/resin-4.0.49.tar.gz)下载resin安装包。
-将resin包解压在build/webadmin目录下
+将resin包解压在build/目录下
 
 ```
-cd build/webadmin
+cd build/
 tar xvf resin-4.0.49.tar.gz
 mv resin-4.0.49 resin
 ```
@@ -164,7 +164,6 @@ vi conf/resin.xml
 在resin目录下，执行
 
 ```
-./bin/resin.sh stop
 ./bin/resin.sh start
 ```
 
@@ -172,11 +171,20 @@ vi conf/resin.xml
 
 ```
 cd resin # 进入到resin目录下
-vim webapps/seer-1.0.0-SNAPSHOT/WEB-INF/classes/system.properties
+vi webapps/seer-1.0.0-SNAPSHOT/WEB-INF/classes/system.properties
 ```
 
 将seer.api.url和seer.agent.onekey.install.url的值修改成你部署的TseerServer监听ip及4.2节配置的apiport
-最后重启resin即可
+
+例如，如果tseer的bind_ip配置的是localhost,端口是9904,那么这样修改即可：
+`seer.api.url=http://127.0.0.1:9904/v1/interface`
+
+最后重启resin:
+
+```
+./bin/resin.sh stop
+./bin/resin.sh start
+```
 
 
 ## 6. 开始体验tseer

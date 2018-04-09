@@ -1,4 +1,4 @@
-/**
+<!--
  * Tencent is pleased to support the open source community by making Tseer available.
  *
  * Copyright (C) 2018 THL A29 Limited, a Tencent company. All rights reserved.
@@ -12,7 +12,7 @@
  * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
  * CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- */
+-->
 
 <link href="/css/base.css" rel="stylesheet" />
 <link href="/global-libs/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet">

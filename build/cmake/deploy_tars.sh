@@ -3,10 +3,10 @@
 TIMESTAMP=`date "+%F %T"`
 
 if [ -n "Tars" -a -e "Tars" ];then
-	echo "[INFO] $TIMESTAMP we has downloaded tars"
+	echo "[INFO] $TIMESTAMP we have already downloaded tars"
 else
     echo "[INFO] $TIMESTAMP downloading tars..."
-    git clone https://github.com/Tencent/Tars.git #>/dev/null
+    git clone https://github.com/Tencent/Tars.git >/dev/null
     if [ "$?" -ne "0" ]; then
         echo "[ERROR] $TIMESTAMP Download Tars failed."
         exit 2
