@@ -204,9 +204,9 @@ tseer提供C++、Java的API,路径放在预设安装路径下的api目录下
 
 如何使用，请查看相应API使用教程和实例
 
-[c++ api](api/cplus/doc/cplus-api-quickstart.md)
+[c++ api](docs/cplus-api-quickstart.md)
 
-[java api](api/java/docs/seer-api-java-quickstart.md)
+[java api](docs/seer-api-java-quickstart.md)
 
 
 ## 7. 安装TseerAgent
@@ -233,7 +233,7 @@ wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.
 
   **注意** 一般来说还需要指定os版本,格式形如CentOs-7.2-64,不然无法下载agent包。所以最终命令如下
 ```
-wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.17.89.35 --osversion=CentOs-7.2-64
+wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.17.89.35 --os=CentOs-7.2-64
 ```
 
 ### 7.3 登陆目标机器，执行命令
