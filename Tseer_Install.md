@@ -5,7 +5,7 @@
 软件 |软件要求
 ------|--------
 linux内核版本:      |	2.6.18及以上版本（操作系统依赖）
-gcc版本:          	|   4.1.2及以上版本、glibc-devel（c++语言框架依赖,源码编译依赖）
+gcc/g++版本:       	|   4.1.2及以上版本、glibc-devel（c++语言框架依赖,源码编译依赖）
 bison工具版本:      |	2.5及以上版本（c++语言框架依赖,源码编译依赖）
 flex工具版本:       |	2.5及以上版本（c++语言框架依赖,源码编译依赖）
 cmake版本：       	|   2.8.8及以上版本（c++语言框架依赖,源码编译依赖）
@@ -14,7 +14,7 @@ Java JDK版本：      | 	web管理系统（最低1.8）
 Maven版本：			|   2.2.1及以上版本（web管理系统、java语言框架依赖）
 rapidjson版本:      |   1.0.2版本（c++语言框架依赖,源码编译依赖）
 
-运行服务器要求：1台普通安装linux系统的机器即可。
+运行服务器要求：1台安装linux系统的机器即可。
 
 ## 1. 安装方式选择
 
@@ -24,7 +24,7 @@ Tseer暂时只提供源码编译方式安装,可定制性强,由于一键安装�
 
 #### 源码安装
 
-需要预先安装python, gcc, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
+需要预先安装python, g++, cmake, wget, curl, flex, bison，确保机器网络正常，能够克隆github的仓库.
 
 ## 2. Tars
    TSeer依赖[Tars](https://github.com/Tencent/Tars).
@@ -217,7 +217,7 @@ tseer提供C++、Java的API,路径放在预设安装路径下的api目录下
 
 ### 7.1 web页面操作上传添加agent安装包
 
-- 在web页面右上方选择`发布包管理`，然后在左侧选择上传发布包，如下图.
+- 在web页面右上方选择`发布包管理`，然后在左侧选择上传TSeerAgent发布包，如下图.
 
 ![uploadagent](docs/images/uploadagent.png)
 
@@ -231,12 +231,12 @@ wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.
 ```
   其中10.17.89.41是你执行一键脚本所在的机器，innerip则是你的目标机器
 
-  **注意** 一般来说还需要指定os版本,格式形如CentOs-7.2-64,不然无法下载agent包。所以最终命令如下
+  **注意** 一般来说还需要指定os版本,格式形如CentOs-7.2-64,不然无法下载agent包。所以最终命令类似:
 ```
 wget http://10.17.89.41:9904/installscript && python installscript --innerip=10.17.89.35 --os=CentOs-7.2-64
 ```
 
-### 7.3 登陆目标机器，执行命令
+### 7.3 登陆目标机器，执行上面的命令
 
    执行命令完成后，使用ps命令或netstat查看agent进程是否启动成功
 

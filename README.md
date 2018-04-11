@@ -22,7 +22,7 @@ TSeer拥有web管理界面和API接入两种方式可供用户根据需求自由
 
 ## 安装指引
 
-TSeer提供了一键部署脚本，安装十分方便快捷。详见[TSeer安装文档](Tseer_Install.md)
+TSeer提供了一键部署脚本，安装方便快捷。详见[TSeer安装文档](Tseer_Install.md)
 
 ## api
 
