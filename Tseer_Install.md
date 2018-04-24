@@ -74,7 +74,7 @@ bind_ip=localhost
 ```ini
 [tseer_server]
 ; agent registry and report heartbeat
-regport=9002
+regport=9902
 ; query service ip and port
 queryport=9903
 ; admin port
