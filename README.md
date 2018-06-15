@@ -1,3 +1,5 @@
+﻿[Click me switch to English version](README.en.md)
+
 ## TSeer
 
 TSeer是一套服务注册发现容错的解决方案，是对Tars名字服务功能的轻量化。在腾讯浏览器、应用宝、管家、手机书城、腾讯文学、广点通等众多业务中广泛采用，目前日均承载百亿级别的请求量。
