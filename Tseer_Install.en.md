@@ -5,7 +5,7 @@
 Software |Software requirements
 ------|--------
 linuxkernel version:      |	2.6.18 or later (Dependent OS)
-gcc/g++ version:       	|   4.1.2 or later¡¢glibc-devel£¨C++ language framework and source compiler dependencies£©
+gcc/g++ version:       	|   4.8.1 or later£¨Support c++11£©¡¢glibc-devel£¨C++ language framework and source compiler dependencies£©
 bison version:      |	2.5 or later£¨C++ language framework and source compiler dependencies£©
 flex version:       |	2.5 or later£¨C++ language framework and source compiler dependencies£©
 cmake version£º       	|   2.8.8 or later£¨C++ language framework and source compiler dependencies£©
