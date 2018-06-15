@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Tseerapi)
 
-set(CMAKE_CXX_FLAGS "-O2 -Wall -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "-std=c++11 -O2 -Wall -Wno-deprecated")
 
 set(TSEERAPI_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
