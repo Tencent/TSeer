@@ -8,7 +8,7 @@
 
 ## 1. <a id="ch-1"></a>Introduction of Tseer
 
-Tseer is a high-performance tool to solve service discovery between multi-frame service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent, which with a daily average of ten billions of requests.
+Tseer is a high-performance tool to solve service discovery between multi-framework service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent, which with a daily average of ten billions of requests.
 
 In addition to the core features of service discovery, Tseer also supports a variety of excellent load balancing algorithms and provide reliable fault tolerant strategies. For the rapid development of massive services, Tseer supports three different routing strategies: nearest access, IDC  Grouping , and Set Grouping. Through TSeer, the engineering services can achieve highly intelligent scheduling optimization, effectively solve the cross-regional cross-area room calls and other issues, greatly promoted the availability and performance.
 

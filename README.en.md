@@ -8,7 +8,7 @@ Users can freely choose web management interface or API access to use TSeer acco
 
 At the same time, TSeer is so lightweight that it has low business intrusiveness. The services, not based on Tars, can also be seamlessly accessed. TSeer is an excellent name service solution in the microservices framework.
 
-Detailed product description can be found in the [TSeer Product Introduction](Introduction..en.md)
+Detailed product description can be found in the [TSeer Product Introduction](Introduction.en.md)
 
 ## Support Platform
 
