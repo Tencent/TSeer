@@ -8,9 +8,9 @@
 
 ## 1. <a id="ch-1"></a>Introduction of Tseer
 
-Tseer is a high-performance tool to solve service discovery between multi-frame service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent, which with a daily average of billions of requests.
+Tseer is a high-performance tool to solve service discovery between multi-frame service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent, which with a daily average of ten billions of requests.
 
-In addition to the core features of service discovery, Tseer also supports a variety of excellent load balancing algorithms and provide reliable fault tolerant strategies. For the rapid development of massive services, Tseer supports three different routing strategies: nearest access, logical grouping by SET, and full scheduling. Through TSeer, the engineering services can achieve highly intelligent scheduling optimization, effectively solve the cross-regional cross-area room calls and other issues, greatly promoted the availability and performance.
+In addition to the core features of service discovery, Tseer also supports a variety of excellent load balancing algorithms and provide reliable fault tolerant strategies. For the rapid development of massive services, Tseer supports three different routing strategies: nearest access, IDC  Grouping , and Set Grouping. Through TSeer, the engineering services can achieve highly intelligent scheduling optimization, effectively solve the cross-regional cross-area room calls and other issues, greatly promoted the availability and performance.
 
 Users can freely choose web management interface or API access to use TSeer according to their needs. TSeer provides transparent service discovery through proxy nodes and proxy server mechanisms for services that require frequent changes. TSeer's learning cost is very low and its operation is very convenient. Therefore, it is very friendly to Business operations staff.
 
@@ -88,7 +88,7 @@ TSeer provides IDC grouping, Set grouping, and All three ways to resolve cross-r
 
 * IDC Grouping
 
-  The IDC grouping routing can be viewed approximately as a nearby access.
+  The IDC grouping routing can be viewed approximately as a nearest access.
 
 This method is divided into two levels. The first level is the physical group, which is the smallest group scheduling unit. The physical group is assigned a unified identification name according to the room or area where the node is located. The second level is the logical group made up of physical groups, which can assign a unified identification name to a larger area.
 
