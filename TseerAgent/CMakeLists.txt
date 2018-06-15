@@ -1,6 +1,6 @@
 project(TseerAgent)
 
-set(CMAKE_CXX_FLAGS "-g -O2 -Wall -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -Wall -Wno-deprecated")
 
 add_definitions(-DTARS_VERSION="${TARS_VERSION}" -DOS_VERSION="${OS_VERSION}")
 

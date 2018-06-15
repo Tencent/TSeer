@@ -38,7 +38,7 @@ set(OS_VERSION "CentOs-6.5-64")
 # tars框架版本//todo
 set(TARS_VERSION "1.0.1")
 
-set(CMAKE_CXX_FLAGS "-g -O2 -Wall -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -Wall -Wno-deprecated")
 
 #调用tars2cpp, 生成tars对应的文件
 macro(complice_tars OUT_DEPENDS_LIST HEADER)

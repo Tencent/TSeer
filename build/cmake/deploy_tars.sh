@@ -27,7 +27,11 @@ INSTALLTARSPATH=$(pwd)/../thirdparty/tars/
 
 TIMESTAMP=`date "+%F %T"`
 echo "[INFO] $TIMESTAMP building tars into $INSTALLTARSPATH ..."
-cd ./Tars/cpp/build; cp CMakeLists.txt ../; cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALLTARSPATH; make; make; make install;
+cd ./Tars/cpp/build && cp CMakeLists.txt ../ && cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALLTARSPATH && make && make install;
+if [ "$?" -ne "0" ]; then
+	echo "[ERROR] $TIMESTAMP Compile Tars failed."
+	exit 3
+fi
 
 rm -rf Tars
 
