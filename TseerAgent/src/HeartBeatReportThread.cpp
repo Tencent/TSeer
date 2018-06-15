@@ -109,7 +109,7 @@ void HeartBeatReportThread::run()
                     {
                         keys += (*it) + ";";
                     }
-                    apiKeyContext.insert(std::make_pair<string, string>("KEY_INFO", keys));
+                    apiKeyContext.insert(std::make_pair("KEY_INFO", keys));
                     ret = _registryPrx->keepAliveExt(nodeInfo, apiKeyContext);
                     TSEER_LOG(HEART_BEAST_LOG)->debug() << FILE_FUN << "Agent report api keys success:" << keys << endl;
 
