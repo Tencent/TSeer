@@ -17,6 +17,7 @@
 #ifndef __FILEWRITER_FACTORY_H
 #define __FILEWRITER_FACTORY_H
 
+#include <functional>
 #include "util/tc_thread.h"
 #include "util/tc_thread_queue.h"
 #include "util/tc_autoptr.h"
@@ -55,7 +56,7 @@ struct FileTask
 class FileWriterFactory : public TC_ThreadLock,public TC_Singleton<FileWriterFactory, CreateUsingNew, DefaultLifetime>
 {
     /**定义hash处理器*/
-    typedef TC_Functor<uint32_t, TL::TLMaker<const string &>::Result> hash_functor;
+    using hash_functor = std::function<uint32_t (const string& )>;
 public:
     FileWriterFactory() ;
 public:

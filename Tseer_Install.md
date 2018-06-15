@@ -1,3 +1,5 @@
+﻿[Click me switch to English version](Tseer_Install.en.md)
+
 # TSeer 安装指引
 
 ## 依赖环境

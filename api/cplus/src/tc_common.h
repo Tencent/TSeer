@@ -22,6 +22,7 @@
 #endif
 
 #include <time.h>
+#include <type_traits>
 #include <errno.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -40,7 +41,6 @@
 #include <map>
 #include <stack>
 #include <vector>
-#include "tc_loki.h"
 
 namespace Tseerapi
 {
@@ -609,7 +609,7 @@ namespace p
 template<typename T>
 T TC_Common::strto(const std::string &sStr)
 {
-    typedef typename TL::TypeSelect<TL::TypeTraits<T>::isStdArith, p::strto1<T>, p::strto2<T> >::Result strto_type;
+    using strto_type = typename std::conditional<std::is_arithmetic<T>::value, p::strto1<T>, p::strto2<T>>::type;
 
     return strto_type()(sStr);
 }
