@@ -28,7 +28,7 @@ We have developed Tseer to solve these problems.
 
 ## 3. <a id="ch-3"></a>Architecture of Tseer
 
-![tseer](docs/images/pptseer.png)
+![tseer](docs/images/pptseer.en.png)
 
 TSeer's structure is divided into three parts: TSeerServer, Business Client(caller), Business Server(callee).
 
@@ -139,7 +139,7 @@ When the TSeer Server fails, the TSeer API will return the visited callee node f
 
 **Agent Api Type vs. TSeer Api Type**
 
-![tseer](docs/images/seer_feature.png)
+![tseer](docs/images/seer_feature.en.png)
 
 
 
