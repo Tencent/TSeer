@@ -8,34 +8,34 @@
 
 ## 1. <a id="ch-1"></a>Introduction of Tseer
 
-Tseer is a high-performance tool to solve service discovery between multi-framework service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent, which with a daily average of ten billions of requests.
+Tseer is a high-performance tool to solve service discovery between multi-frame service clusters, which routes by name and is simple to use. TSeer is widely used in Tencent with an average daily requests of ten billions.
 
-In addition to the core features of service discovery, Tseer also supports a variety of excellent load balancing algorithms and provide reliable fault tolerant strategies. For the rapid development of massive services, Tseer supports three different routing strategies: nearest access, IDC  Grouping , and Set Grouping. Through TSeer, the engineering services can achieve highly intelligent scheduling optimization, effectively solve the cross-regional cross-area room calls and other issues, greatly promoted the availability and performance.
+In addition to the core features of service discovery, Tseer also supports a variety of excellent load balancing algorithms and provide reliable fault tolerant strategies. To handle the rapid development of massive services, Tseer supports three different routing strategies: nearest access, IDC  Grouping , and Set Grouping. Through TSeer, the engineering services can achieve highly intelligent scheduling optimization, effectively solve the cross-regional cross-area room calls and other issues, greatly promoted the availability and performance.
 
-Users can freely choose web management interface or API access to use TSeer according to their needs. TSeer provides transparent service discovery through proxy nodes and proxy server mechanisms for services that require frequent changes. TSeer's learning cost is very low and its operation is very convenient. Therefore, it is very friendly to Business operations staff.
+Users can choose web management interface or API access to use TSeer according to their needs. TSeer provides transparent service discovery through proxy nodes and proxy server mechanisms for services that require frequent changes. TSeer's learning cost is very low and its operation is very convenient. Therefore, it is very friendly to Business operations staff.
 
 Compared with other service discovery tool, TSeer is lightweight and has low business intrusiveness because of working in bypass mode. Whether it is dealing with new business or old business, TSeer is very suitable and extremely friendly. TSeer is an excellent name service solution in the microservices framework.
 
 ## 2. <a id="ch-2"></a>Research Background
 
-Monolithic architecture services are rarely released for change, and the network location of the service is rarely changed. Operation and maintenance personnel handle occasional service changes by manually changing the configuration. Now that a system has a large number of services, the monolithic architecture design idea has been unable to efficiently and steadily support the business growth. Distributed service clusters and microservice frameworks have gradually become mainstream.
+Monolithic architecture services are rarely released for change, and the network location of the service is also rarely changed. Occasional service changes can be handled by manually changing the configuration.  However, for a system with a large number of services, the monolithic architecture can not efficiently and steadily support the business growth. Distributed service clusters and microservice frameworks have gradually become the mainstream.
 
 However, while the new architecture provides better support for services, services are frequently updated and scaled, resulting in frequent changes in the network location of services. In this case, the O&M personnel manually change the configuration not only increases the risk of errors, but also limits the rapid development of the business. Often, the O&M personnel have not changed the configuration and new changes will need to be released. To sum up, there must be an automated service discovery tool to solve these problems. 
 
-In addition to the above issues, on the premise that services are successfully accessed, service response time, as the most important indicator of service quality, is the most critical aspect affecting business development. The complex call relationships between multiple service sets and other factors such as cross-regional cross-network calls, resulting in long service response times, are major issues that limit the overall business development. At the same time, whether the use of physical machines or virtual machines, the service caused by the downtime can not be available from time to time, so fault tolerance is an issue that needs to be solved.
+In addition to the above issues, on the premise that services are successfully accessed, service response time, as the most important indicator of service quality, is the most critical aspect affecting business development. The complex call relationships between multiple service sets and other factors such as cross-regional cross-network calls, resulting in long service response times, are major issues that limit the overall business development. At the same time, no matter we use physical machines or virtual machines, the unavailability of service caused by the downtime may happen from time to time, so effecient fault tolerance is also an issue that needs to be solved.
 
 We have developed Tseer to solve these problems.
 
 ## 3. <a id="ch-3"></a>Architecture of Tseer
 
-![tseer](docs/images/pptseer.png)
+![tseer](docs/images/pptseer.en.png)
 
-TSeer's structure is divided into three parts: TSeerServer, Business Client(caller), Business Server(callee).
+TSeer's structure is composed of three parts: TSeerServer, Business Client(caller), Business Server(callee).
 
 * TSeerServer
 
     TSeerServer is the hub and core module of the entire TSeer. 
-    When a new node goes online, the O&M personnel need to first register the node with the TSeerServer cluster through the WEB management platform and record its network location information in the TSeerServer system. When the node needs to be offline or modified, the O&M personnel also need to perform related operations on the WEB management platform. Callee will periodically report the heartbeat to Tseerserver. Tseerserver will block the heartbeat timeout node so that it cannot be called.
+    When a new node goes online, the O&M personnel need to first register the node with the TSeerServer cluster through the WEB management platform and record its network location information in the TSeerServer system. When the node needs to be offline or modified, the O&M personnel also need to perform related operations on the WEB management platform. Callee will periodically report the heartbeat to Tseerserver. Tseerserver will block the nodes with timeout heartbeat so that they cannot be called.
 
 * Business Client
 
@@ -51,28 +51,28 @@ TSeer's structure is divided into three parts: TSeerServer, Business Client(call
 
 ### 1.Load balancing
 
-When some nodes are frequently called in the same service cluster, and some other nodes do not bear a reasonable load, the service quality and response time of the service will be greatly reduced, and resources will also be wasted.
+When some nodes are frequently called in the same service cluster, while other nodes do not bear a reasonable load, the service quality and response time of the service will be greatly reduced, and resources will also be wasted.
 
-In the Tseer system, when the caller initiates a call, TSeer provides caller with four load balancing methods for all available nodes under the callee's name to ensure that each node of the callee cluster bears a reasonable load. Here are:
+In the Tseer system, when the caller initiates a call, TSeer provides caller with four load balancing methods for all available nodes under the callee's name to ensure that each node of the callee cluster bears a reasonable load. They are:
 
 * Round Robin
 * Random
 * Static Weight
 * Consistent hash
 
-The user can also customize the load balancing implementation by invoking the grouping method. The manner of invoking the grouping will be mentioned below.
+The user can also customize the load balancing implementation by invoking the grouping method. The way of invoking the grouping will be mentioned below.
 
 ### 2.Fault Tolerant
 
 In order to solve the problem of service unavailability and service quality degradation caused by node downtime, TSeer also provides a reliable fault tolerance mechanism.
 
-After the caller makes a call, the result of the call is reported to TSeer Server. If the call fails, TSeer Server temporarily masks the callee's node to prevent the faulty node from being called repeatedly. The TSeer Server will periodically probe the blocked callee's node. When the faulty callee's node recovers the service, The TSeer Server will activate it again.
+After the caller makes a call, the result of the call is reported to TSeer Server. If the call failed, TSeer Server would temporarily mask the callee's node to prevent the faulty node from being called repeatedly. The TSeer Server will periodically probe the blocked callee's node. When the faulty callee's node recovers the service, The TSeer Server will activate it again.
 
 > For any callee's node, the node is blocked when one of the following conditions is met:
 > 
-> 1. The number of call failures reaches twice in one detection cycle (60 seconds), and the number of call errors exceeds 50% of the total number of calls.
+> 1. The number of call failures reaches two in one detection cycle (60 seconds), and the number of call errors exceeds 50% of the total number of calls.
 >
-> 2. Consecutive calls failed more than 5 times in 5 seconds.
+> 2. More than 5 consecutive call failures in 5 seconds.
 
 TSeer Agent/Api will retry masked nodes every 30 seconds.
 
@@ -80,7 +80,7 @@ When TSeer Server fails, callers can continue to call based on the cached inform
 
 ### 3.Call optimization
 
-TSeer provides IDC grouping, Set grouping, and All three ways to resolve cross-regional calls for the calling logic.
+TSeer provides three ways to resolve cross-regional calls for the calling logic: IDC grouping, Set grouping, and All.
 
 * All
 
@@ -96,7 +96,7 @@ For the logical grouping of IDC, TSeer also defines a call priority policy, that
 
 * Set Grouping
 
-IDC Grouping mainly divides the groupings in the concept of the area and implements the nearest access strategy. When the service size in the back-end service architecture reaches a certain number, if it is required to implement isolation control based on capacity, grayscale, and partition management for certain service nodes, the IDC Grouping cannot be satisfied. However, Set Grouping is a refinement of IDC Grouping.
+IDC Grouping mainly divides the groupings in the concept of the area and implements the nearest access strategy. When the service size in the back-end service architecture reaches a certain amount, if it is required to implement isolation control based on capacity, grayscale, and partition management for certain service nodes, the IDC Grouping cannot be satisfied. However, Set Grouping is a refinement of IDC Grouping.
 
 The naming rules for a Set Grouping are: **Set Name.Set Region.Set Group**. Among them, the **Set group** is the smallest distinguishing unit and supports the wildcard character *, indicating all the groups under the Set Region. For example, 0,1,2,3,4 or a,b,c,d.
 
@@ -120,7 +120,7 @@ In the Agent type, the TSeer Agent periodically caches the information of the ca
 
 **Data Reporting**
 
-After each call is completed, the caller needs to invoke the report interface provided by the TSeer API to report the call information. The call information will be immediately reported by the TSeer API to the Tseer Agent. The Tseer Agent will remove the invalidated callee node based on the call information.
+After each call is completed, the caller needs to invoke the report interface provided by the TSeer API to report the call information. The call information will be immediately reported by the TSeer API to the Tseer Agent. The Tseer Agent will remove the invalidated callee nodes based on the call information.
 
 **Fault Tolerant**
 When using the Agent mode, if the TSeer Agent fails, the TSeer API will return the visited callee node from the memory to the caller. If the cache fails, the TSeer API will restore the cached information from the local disk to the caller. It should be noted that, at this time, the Callee node information provided by TSeer Api to the caller is lossy information, and TSeer Api does not guarantee that the callee node must be alive.
@@ -139,7 +139,7 @@ When the TSeer Server fails, the TSeer API will return the visited callee node f
 
 **Agent Api Type vs. TSeer Api Type**
 
-![tseer](docs/images/seer_feature.png)
+![tseer](docs/images/seer_feature.en.png)
 
 
 
