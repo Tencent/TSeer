@@ -284,11 +284,11 @@ int main()
 
 	iRet = ApiGetRoutes(req, errMsg);
 	if (iRet == 0) {
-		vector<NodeInfo>::vIter;
+		vector<NodeInfo>::iterator vIter;
 		string sNodeInfo;
 		for (vIter = req.nodeInfoVec.begin(); vIter != req.nodeInfoVec.end(); vIter++) {
 			sNodeInfo += vIter->ip + ":";
-			sNodeInfo += vIter->port + " | ";
+			sNodeInfo += to_string(vIter->port) + " | ";
 			if (vIter->isTcp) {
 				sNodeInfo += "tcp | ";
 			} else {
@@ -391,10 +391,10 @@ int main()
 
 	iRet = ApiGetRoute(req, errMsg);
 	if (iRet == 0) {
-		vector<NodeInfo>::iteratro vIter;
+		vector<NodeInfo>::iterator vIter;
 		for (vIter = nodeInfoVec.begin(); vIter != nodeInfoVec.end(); vIter++) {
 			string sNodeInfo += vIter->ip + ":";
-			sNodeInfo += vIter->port + " | ";
+			sNodeInfo += to_string(vIter->port) + " | ";
 			if (vIter->isTcp) {
 				sNodeInfo += "tcp | ";
 			} else {
