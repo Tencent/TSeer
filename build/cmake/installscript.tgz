@@ -115,7 +115,7 @@ def start_service(prefix):
 
 
 def add_monitor(prefix):
-    cron_cmd = "(crontab -l ; echo '* * * * * sh %s/Tseer/util/mon_TseerAgent.sh') | crontab -" % prefix
+    cron_cmd = "(crontab -l ; echo '* * * * * sh %s/Tseer/TseerAgent/util/mon_TseerAgent.sh') | crontab -" % prefix
     stat, rst = execute_cmd(cron_cmd)
     if not stat:
         print "[ERROR] %s Add monitor Failed." % TIME_STAMP
