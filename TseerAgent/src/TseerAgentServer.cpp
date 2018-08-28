@@ -349,6 +349,14 @@ int parseConfig(int argc, char *argv[])
         usage();
     }
 
+    //获取本机配置的 ip (IPV4)
+    char iface[8];
+    char ip[INET_ADDRSTRLEN];
+    if (!get_default_if(iface, 8) || !get_ip(iface, ip, INET_ADDRSTRLEN)) {
+        cerr << FILE_FUN << " get default ip via /proc/net/route failed, using default value instead" << endl;
+        memset(ip, 0, INET_ADDRSTRLEN);
+    }
+
     //读取配置文件
     if(!TC_File::isFileExistEx(configFile)) {
         cerr <<configFile << " file don't exist!" << endl;
@@ -395,7 +403,7 @@ int parseConfig(int argc, char *argv[])
     }
 
     //主要是要注册到路由中心方便云端管理，所以这里必须是内网ip
-    std::string innerIp = paramConf.get("/server<localip>", "");
+    std::string innerIp = paramConf.get("/server<localip>", ip);
     
     //默认是绑定本地127.0.0.1,提供给api访问
     std::string routerIp = paramConf.get("/server<routerip>", "127.0.0.1");
