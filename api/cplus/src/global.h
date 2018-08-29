@@ -132,10 +132,14 @@ std::string getUnkeyFromReq(const InnerRouterRequest &req);
 //合并错误信息,currErr本层错误信息，subErr上层的错误信息
 std::string mergeErrMsg(const std::string &currErr, const std::string &subErr);
 
+//定义缓存文件的路径
+#ifndef ROUTERSCACHE_PATH
+#define ROUTERSCACHE_PATH "/tmp/.routersCache/"
+#endif
+
 #ifndef FILE_FUN
 #define FILE_FUN  __FILE__<<":"<<__FUNCTION__<<":"<<__LINE__<<"|"
 #endif
-
 }
 
 #endif
