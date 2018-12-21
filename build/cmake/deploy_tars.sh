@@ -6,7 +6,7 @@ if [ -n "Tars" -a -e "Tars" ];then
 	echo "[INFO] $TIMESTAMP we have already downloaded tars"
 else
     echo "[INFO] $TIMESTAMP downloading tars..."
-    git clone --recursive  https://github.com/Tencent/Tars.git >/dev/null
+    git clone https://github.com/Tencent/Tars.git --recurse-submodules=cpp >/dev/null
     if [ "$?" -ne "0" ]; then
         echo "[ERROR] $TIMESTAMP Download Tars failed."
         exit 2
