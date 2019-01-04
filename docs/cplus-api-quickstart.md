@@ -280,7 +280,6 @@ int main()
 	req.obj = "tencent.tencentServer.HelloService";
 	req.lbGetType = LB_GET_SET;
 	req.setInfo = "sz.a.b";
-	req.type = LB_TYPE_ALL;
 
 	iRet = ApiGetRoutes(req, errMsg);
 	if (iRet == 0) {

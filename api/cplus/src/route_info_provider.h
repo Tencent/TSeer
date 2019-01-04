@@ -125,9 +125,9 @@ private:
     //线程ID
     unsigned _tid;
 
-    bool _available;
-
-    int _failedNum;
+    //可用性判断
+    int    _failedNum;
+    time_t _revive_time;
 };
 
 /********************************************************

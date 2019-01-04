@@ -15,7 +15,6 @@
  */
 
 #include "route_info_provider.h"
-
 #include <sys/syscall.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -96,7 +95,8 @@ int RegistryProvider::getRouteInfo(const InnerRouterRequest &req, Tseer::AgentRo
     vector<Tseerapi::EndpointF> activeEpF;
     vector<Tseerapi::EndpointF> inactiveEpF;
     TarsUniPacket<> packet;
-    packet.setRequestId(__sync_fetch_and_add(&registry_seq, 1));
+    __asm__ __volatile__ ("lock; incl %0\n\t" : "+m" (registry_seq) :: "memory");
+    packet.setRequestId(registry_seq);
     packet.setVersion(3);
     packet.setServantName(g_registry_obj);
     packet.put<string>("id", req.obj);
@@ -277,7 +277,7 @@ void RegistryProvider::setAvailable() {}
 
 const int AgentProvider::AGENT_FAIL_THRESHOLD = 3;
 
-AgentProvider::AgentProvider() :_available(true), _failedNum(0)
+AgentProvider::AgentProvider() :_failedNum(0), _revive_time(0)
 {
     _tid = syscall(SYS_gettid);
 }
@@ -337,7 +337,8 @@ int AgentProvider::getRouteInfo(const InnerRouterRequest &req, Tseer::AgentRoute
 
     //编码到TUP
     TarsUniPacket<> packet;
-    packet.setRequestId(__sync_fetch_and_add(&agent_seq, 1));
+    __asm__ __volatile__ ("lock; incl %0\n\t" : "+m" (agent_seq) :: "memory");
+    packet.setRequestId(agent_seq);
     packet.setVersion(3);
     packet.setServantName(g_agent_router_obj);
     packet.setFuncName(g_agent_router_func);
@@ -449,7 +450,7 @@ int AgentProvider::getRouteInfo(const InnerRouterRequest &req, Tseer::AgentRoute
 
 bool AgentProvider::isAvailable() const
 {
-    return _available;
+    return time(NULL) >= _revive_time;
 }
 
 bool AgentProvider::addFailedNumAndCheckAvailable()
@@ -457,16 +458,17 @@ bool AgentProvider::addFailedNumAndCheckAvailable()
     ++_failedNum;
     if (_failedNum >= AGENT_FAIL_THRESHOLD)
     {
-        _available = false;
+        _revive_time = time(NULL) + AGENT_FAIL_THRESHOLD * g_node_normal_expire_interval;
         _failedNum = 0;
+        return false;
     }
-    return _available;
+    return true;
 }
 
 void AgentProvider::setAvailable()
 {
-    _failedNum = 0;
-    _available = true;
+    _failedNum   = 0;
+    _revive_time = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

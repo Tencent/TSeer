@@ -53,7 +53,9 @@ CacheManager::~CacheManager()
 void CacheManager::init(const string &cacheDir)
 {
     _cacheDir = cacheDir;
-    Tseerapi::TC_File::makeDirRecursive(cacheDir);
+    mode_t old_mask = umask(0);
+    Tseerapi::TC_File::makeDirRecursive(cacheDir, 0777);
+    umask(old_mask);
 }
 
 void CacheManager::updateAllCache(const string &obj, const vector<EndPoint> &activeEp, const vector<EndPoint> &inactiveEp)
@@ -238,14 +240,15 @@ void CacheManager::updateCache(const string &obj, const string &subdomain, const
     writeToDisk(obj, oldConf);
 }
 
-
 int CacheManager::writeToDisk(const string &obj, Tseerapi::TC_Config *conf)
 {
     //用linux的系统调用write来执行，保证原子性
     string content = conf->tostr();
     string filePath = _cacheDir + obj;
 
+    mode_t old_mask = umask(0);
     int fileFd = open(filePath.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
+    umask(old_mask);
     if (fileFd != -1)
     {
         write(fileFd, content.c_str(), content.size());
@@ -258,8 +261,10 @@ int CacheManager::writeToDisk(const string &obj, Tseerapi::TC_Config *conf)
 int CacheManager::writeUniCache(const std::string fileName, Tseerapi::TC_Config *conf)
 {
     string content = conf->tostr();
-    string filePath = "routersCache/" + fileName;
+    string filePath = ROUTERSCACHE_PATH + fileName;
+    mode_t old_mask = umask(0);
     int fileFd = open(filePath.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
+    umask(old_mask);
     if (fileFd != -1)
     {
         write(fileFd, content.c_str(), content.size());
