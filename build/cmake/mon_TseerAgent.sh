@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IP=`ip a s |awk '/inet/ { if (($2 !~ /127.0.0.1/) && ($2 !~ /::1/)) { print $2} }'| cut -d / -f 1`
+IP=`/sbin/ip a s |awk '/inet/ { if (($2 !~ /127.0.0.1/) && ($2 !~ /::1/)) { print $2} }'| cut -d / -f 1 | head -n 1`
 PORT=9765
 BASE_DIR=/usr/local/
 
@@ -29,7 +29,7 @@ start_server()
         sleep 5
         ps -ef |grep  "${BASE_DIR}/Tseer/TseerAgent/bin/TseerAgent"|grep -v grep >/dev/null 2>&1
         if [ "$?" -ne "0" ]; then
-		return 1
+                return 1
         fi
         return 0
 }
@@ -47,8 +47,7 @@ mon_process()
 
 mon_port()
 {
-        result1=`echo quit|telnet $IP $PORT 2>/dev/null`
-        echo $result1 |grep -q "Escape character"
+        netstat -tnl | grep "$IP:$PORT" >/dev/null 2>&1
         if test $? = 0; then
                 echo "`date +"%Y-%m-%d %H:%M:%S"` the port $PORT is good"
                 return 0
@@ -58,19 +57,23 @@ mon_port()
         fi
 }
 
-mon_process
-flag_process=$?
-if test $flag_process = 1; then
-        stop_server
-        start_server
-else
-        mon_port
-        flag_port=$?
-        if test $flag_port = 1;then
+for i in {1..11}
+do
+        mon_process
+        flag_process=$?
+        if test $flag_process = 1; then
                 stop_server
                 start_server
         else
-                echo "TseerAgent process and port state is good"
+                mon_port
+                flag_port=$?
+                if test $flag_port = 1;then
+                        stop_server
+                        start_server
+                else
+                        echo "TseerAgent process and port state is good"
+                fi
         fi
-fi
+        sleep 5
+done
 exit 0

@@ -343,18 +343,22 @@ int parseConfig(int argc, char *argv[])
     }
     
     string configFile = "";
-    if (Op.hasParam("config"))
-    {
+    if (Op.hasParam("config")) {
         configFile = Op.getValue("config");
-    }
-    else
-    {
+    } else {
         usage();
     }
 
+    //获取本机配置的 ip (IPV4)
+    char iface[8];
+    char ip[INET_ADDRSTRLEN];
+    if (!get_default_if(iface, 8) || !get_ip(iface, ip, INET_ADDRSTRLEN)) {
+        cerr << FILE_FUN << " get default ip via /proc/net/route failed, using default value instead" << endl;
+        memset(ip, 0, INET_ADDRSTRLEN);
+    }
+
     //读取配置文件
-    if(!TC_File::isFileExistEx(configFile))
-    {
+    if(!TC_File::isFileExistEx(configFile)) {
         cerr <<configFile << " file don't exist!" << endl;
         exit(-1);
     }
@@ -363,64 +367,47 @@ int parseConfig(int argc, char *argv[])
     paramConf.parseFile(configFile);
 
     string sInstallpatch = paramConf.get("/server<installpath>", "");
-    if(sInstallpatch.empty())
-    {
+    if(sInstallpatch.empty()) {
         sInstallpatch = g_app.g_installPath;
     }
-    else
-    {
-        //记录安装路径
-        g_app.g_installPath = sInstallpatch;
-    }
     
+    //解析主控地址列表
     std::string locator = paramConf.get("/server<locator>", "");
-
-    //主要是要注册到路由中心方便云端管理，所以这里必须是内网ip
-    std::string innerIp = paramConf.get("/server<localip>", "");
-    
-    //默认是绑定本地127.0.0.1,提供给api访问
-    std::string routerIp = paramConf.get("/server<routerip>", "127.0.0.1");
-    if (locator.empty())
-    {
+    if (locator.empty()) {
         cerr<<"you should provide locator"<<endl;
         exit(-1);
     }
-
-    //解析主控地址列表
-    if(locator.find("@") == string::npos)
-    {
+    if(locator.find("@") == string::npos) {
         string tmpList;
         vector<string> ipPortlist = TC_Common::sepstr<string>(locator,"|;");
-        for (size_t i = 0; i < ipPortlist.size(); i++)
-        {
+        for (size_t i = 0; i < ipPortlist.size(); i++) {
             vector<string> ipPort = TC_Common::sepstr<string>(ipPortlist[i],":");
-            if(ipPort.size() < 2)
-            {
+            if(ipPort.size() < 2) {
                 cerr<<FILE_FUN<< ipPortlist[i]<<" is invalid"<<endl;
                 continue;
             }
             
             string endPoint= "tcp -h " + ipPort[0] + " -p " + ipPort[1];
-            if (tmpList != "")
-            {
+            if (tmpList != "") {
                 tmpList += ":" + endPoint;
-            }
-            else
-            {
+            } else {
                 tmpList = endPoint;
             }
         }
 
-        if(tmpList.empty())
-        {
+        if(tmpList.empty()) {
             cerr<<"invalid locator param:"<<locator<<endl;
             exit(-1);
         }
         locator = TSEERSERVER_MODULE + ".QueryObj@"+tmpList;
     }
 
-    if(routerIp.empty())
-    {
+    //主要是要注册到路由中心方便云端管理，所以这里必须是内网ip
+    std::string innerIp = paramConf.get("/server<localip>", ip);
+    
+    //默认是绑定本地127.0.0.1,提供给api访问
+    std::string routerIp = paramConf.get("/server<routerip>", "127.0.0.1");
+    if(routerIp.empty()) {
         //监听127.0.0.1
         routerIp = "127.0.0.1";
     }
@@ -436,53 +423,54 @@ int parseConfig(int argc, char *argv[])
         }
     }
     
-    g_app.g_configFile = confPath + "/."+TSEERAGENT_SERVERNAME + ".conf";
-    g_app.g_innerIp = innerIp;
-
+    g_app.g_installPath = sInstallpatch;
+    g_app.g_configFile  = confPath + "/."+TSEERAGENT_SERVERNAME + ".conf";
+    g_app.g_innerIp     = innerIp;
     
     TC_Config           newConf;
     map<string, string> m;
     
-    //server config
-    m["app"]= TSEERAGENT_APPNAME;
-    m["server"]= TSEERAGENT_SERVERNAME;
     string sModuleName = TSEERAGENT_APPNAME + "." + TSEERAGENT_SERVERNAME;
-    m["localip"]= innerIp;
+
+    //server config
+    m["app"]      = TSEERAGENT_APPNAME;
+    m["server"]   = TSEERAGENT_SERVERNAME;
+    m["localip"]  = innerIp;
     // #服务的可执行文件
-    m["basepath"]= TC_File::simplifyDirectory(sInstallpatch + "/"+TSEERAGENT_APPNAME+ "/" + TSEERAGENT_SERVERNAME+"/bin/");
+    m["basepath"] = TC_File::simplifyDirectory(sInstallpatch + "/"+TSEERAGENT_APPNAME+ "/" + TSEERAGENT_SERVERNAME+"/bin/");
     //服务的数据目录
-    m["datapath"]= TC_File::simplifyDirectory(sInstallpatch + "/" + TSEERAGENT_APPNAME + "/" + TSEERAGENT_SERVERNAME+"/data");
-    m["logpath"]= TC_File::simplifyDirectory(sInstallpatch + "/" + TSEERAGENT_APPNAME + "/" + TSEERAGENT_SERVERNAME +"/app_log");
-    m["logLevel"]= "DEBUG";
+    m["datapath"] = TC_File::simplifyDirectory(sInstallpatch + "/" + TSEERAGENT_APPNAME + "/" + TSEERAGENT_SERVERNAME+"/data");
+    m["logpath"]  = TC_File::simplifyDirectory(sInstallpatch + "/" + TSEERAGENT_APPNAME + "/" + TSEERAGENT_SERVERNAME +"/app_log");
+    m["logLevel"] = paramConf.get("/server<logLevel>", "DEBUG");
     //滚动日志大小和个数
-    m["logsize"]= TC_Common::tostr(1024*1024*15);
+    m["logsize"]  = TC_Common::tostr(1024*1024*15);
     m["closecout"] = "1";
     newConf.insertDomainParam( "/tars/application/server", m, true);
 
     //servant config
     m.clear();
-    m["endpoint"]= "udp -h " + routerIp +" -p 8865 -t 60000";
-    m["maxconns"]= "10000";
-    m["threads"]= "8";
-    m["queuecap"]= "10000";
+    m["endpoint"] = "udp -h " + routerIp +" -p 8865 -t 60000";
+    m["maxconns"] = "10000";
+    m["threads"]  = "8";
+    m["queuecap"] = "10000";
     m["protocol"] = "tars";
     m["queuetimeout"] = "60000";
-    m["servant"] = sModuleName + ".RouterObj";
-    m["allow"] = "";
+    m["servant"]  = sModuleName + ".RouterObj";
+    m["allow"]    = "";
     m["handlegroup"] = "RouterObjAdapter";
     newConf.insertDomainParam( "/tars/application/server/RouterObjAdapter", m, true);
 
     if(!g_app.g_innerIp.empty())
     {
         m.clear();
-        m["endpoint"]= "tcp -h " + g_app.g_innerIp +" -p 9765 -t 60000";
-        m["maxconns"]= "10000";
-        m["threads"]= "5";
-        m["queuecap"]= "10000";
+        m["endpoint"] = "tcp -h " + g_app.g_innerIp +" -p 9765 -t 60000";
+        m["maxconns"] = "10000";
+        m["threads"]  = "5";
+        m["queuecap"] = "10000";
         m["protocol"] = "tars";
         m["queuetimeout"] = "60000";
-        m["servant"] = sModuleName + ".UpdateObj";
-        m["allow"] = "";
+        m["servant"]  = sModuleName + ".UpdateObj";
+        m["allow"]    = "";
         m["handlegroup"] = "UpdateObjAdapter";
         newConf.insertDomainParam( "/tars/application/server/UpdateObjAdapter", m, true);
     }

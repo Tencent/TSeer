@@ -217,7 +217,7 @@ static int initAgentRouter(std::string &errMsg)
         return -1;
     }
     
-    remoteProvider->init("./routersCache/");
+    remoteProvider->init(ROUTERSCACHE_PATH);
     //初始化本地的路由信息提供者
     CacheProvider *cacheProvider = new(std::nothrow) CacheProvider;
     if (!cacheProvider)
@@ -242,7 +242,7 @@ static int initAgentRouter(std::string &errMsg)
         remoteProvider = NULL;
         return -1;
     }
-    cacheProvider->setCacheDir("./routersCache/");
+    cacheProvider->setCacheDir(ROUTERSCACHE_PATH);
 
     agent_router->setProvider(remoteProvider, cacheProvider);
     return 0;
@@ -318,7 +318,7 @@ static int initRegistryRouter(std::string &errMsg)
         return -1;
     }
 
-    remoteProvider->init("./routersCache/", registry_ep_mgr);
+    remoteProvider->init(ROUTERSCACHE_PATH, registry_ep_mgr);
 
     //初始化本地路由信息提供者
     CacheProvider *cacheProvider = new(std::nothrow) CacheProvider;
@@ -334,7 +334,7 @@ static int initRegistryRouter(std::string &errMsg)
         //不需要清理registry_ep_mgr
         return -1;
     }
-    cacheProvider->setCacheDir("./routersCache/");
+    cacheProvider->setCacheDir(ROUTERSCACHE_PATH);
 
     registry_router->setProvider(remoteProvider, cacheProvider);
     return 0;
