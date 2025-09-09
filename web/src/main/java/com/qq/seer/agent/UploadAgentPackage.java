@@ -78,7 +78,12 @@ public class UploadAgentPackage extends HttpServlet {
 			LogUtils.localLogInfo(logId, "UploadAgentPackage md5=" + md5);
 			LogUtils.localLogInfo(logId, "UploadAgentPackage packageType=" + packageType);
 			LogUtils.localLogInfo(logId, "UploadAgentPackage osVersion=" + osVersion);
-			
+			// 校验文件名，禁止路径穿越
+			if (filename.contains("..") || fileFilename.contains("..")) {
+				resultObj = execScript("-1", "文件名校验不通过，禁止路径穿越"); 
+				response.getWriter().println(resultObj);	
+				return;
+			}
 			
 			int intPackageType = 2;
 			
@@ -106,6 +111,13 @@ public class UploadAgentPackage extends HttpServlet {
 			LogUtils.localLogInfo(logId, "UploadAgentPackage filePath=" + filePath);
 			new File(fileDir).mkdirs();
 			File agentPackagFile = new File(filePath);
+			// 校验文件是否已存在, 禁止覆盖
+			if (agentPackagFile.exists()) {
+				LogUtils.localLogError(logId, "File exist, filename=" + filePath);
+				resultObj = execScript("-1", "文件已存在");
+				response.getWriter().println(resultObj);
+				return;
+			}
 			File tmpFile = new File(file);
 			
 			String filemd5 = AgentPackageMd5Util.getFileMd5(tmpFile);
