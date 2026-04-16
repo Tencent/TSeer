@@ -3,6 +3,21 @@
 	
 	<multipart-form upload-max="100M" />
 	
+	<!-- Authentication and authorization filter for management routes -->
+	<filter>
+		<filter-name>AuthFilter</filter-name>
+		<filter-class>com.qq.seer.common.filter.AuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthFilter</filter-name>
+		<url-pattern>/interface</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AuthFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<!-- End of AuthFilter configuration -->
+	
 	<display-name>Seer</display-name>
 	
 	<welcome-file-list>

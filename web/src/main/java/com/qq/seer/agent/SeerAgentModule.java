@@ -24,6 +24,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.qq.seer.common.filter.AuthContext;
 import com.qq.seer.http.SeerInterface;
 
 public class SeerAgentModule {
@@ -254,7 +255,11 @@ public class SeerAgentModule {
 	 public static JSONObject getServiceGroup(long logId) {
 		String interfaceName = "getservicegroup";
 		JSONObject paramsObj = new JSONObject();
-		paramsObj.put("rtx", "adminrtx");
+		// Fixed: operator identity from authenticated user context instead of hardcoded "adminrtx"
+		String currentUser = AuthContext.getCurrentUser();
+		if (currentUser != null && !currentUser.isEmpty()) {
+			paramsObj.put("rtx", currentUser);
+		}
 		JSONObject resultObj = SeerInterface.callSeerInterface(logId, paramsObj, interfaceName);
 		return resultObj;
 	 }
@@ -417,7 +422,11 @@ public class SeerAgentModule {
 		
 		JSONObject paramsObj = new JSONObject();
 		paramsObj.put("iplist", ipList);
-		paramsObj.put("key", "webadmin");
+		// Fixed: operator identity from authenticated user context instead of hardcoded "webadmin"
+		String operatorKey = AuthContext.getCurrentUserKey();
+		if (operatorKey != null && !operatorKey.isEmpty()) {
+			paramsObj.put("key", operatorKey);
+		}
 		
 		JSONObject resultObj = SeerInterface.callSeerInterface(logId, paramsObj, interfaceName);
 		return resultObj;

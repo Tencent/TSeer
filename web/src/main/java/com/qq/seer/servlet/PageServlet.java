@@ -325,7 +325,12 @@ public class PageServlet extends CommonHttpServlet {
 		
 		try {
 			LogUtils.localLogInfo(logId, "grayReleasedPage ...");
-			request.setAttribute("isAdmin", "true");
+			// Removed hardcoded isAdmin=true - admin status must come from authenticated user context
+			Boolean isAdmin = (Boolean) request.getAttribute("SEER_AUTH_IS_ADMIN");
+			if (isAdmin == null) {
+				isAdmin = false;
+			}
+			request.setAttribute("isAdmin", isAdmin.toString());
 			
 			request.getRequestDispatcher("/pages/ftl/package/grayReleasedPage.ftl").forward(request, response);
 			return "1";
@@ -361,7 +366,12 @@ public class PageServlet extends CommonHttpServlet {
 			request.setAttribute("ip", ip);
 			request.setAttribute("os_version", osVersion);
 			request.setAttribute("present_state", state);
-			request.setAttribute("isAdmin", "true");
+			// Removed hardcoded isAdmin=true - admin status must come from authenticated user context
+			Boolean isAdmin = (Boolean) request.getAttribute("SEER_AUTH_IS_ADMIN");
+			if (isAdmin == null) {
+				isAdmin = false;
+			}
+			request.setAttribute("isAdmin", isAdmin.toString());
 			
 			request.getRequestDispatcher("/pages/ftl/package/inc/incGrayReleasedPage.ftl").forward(request, response);
 			return "1";
@@ -426,7 +436,12 @@ public class PageServlet extends CommonHttpServlet {
 			request.setAttribute("service_group", serviceGroup);
 			request.setAttribute("app_name", appName);
 			request.setAttribute("servername", serverName);
-			request.setAttribute("hasPrivileges", true);
+			// Removed hardcoded hasPrivileges=true - privilege must come from authenticated user context
+			Boolean isAdmin = (Boolean) request.getAttribute("SEER_AUTH_IS_ADMIN");
+			if (isAdmin == null) {
+				isAdmin = false;
+			}
+			request.setAttribute("hasPrivileges", isAdmin);
 			
 			request.getRequestDispatcher("/pages/ftl/router_manager/ipPortList.ftl").forward(request, response);
 			return "1";
