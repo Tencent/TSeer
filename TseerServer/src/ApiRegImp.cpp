@@ -483,8 +483,51 @@ int ApiRegImp::doRequest(TarsCurrentPtr current, vector<char> & response)
             break;
         }
 
+        // Security fix: reject oversized input to prevent DoS attacks
+        static const size_t MAX_JSON_PARAM_LENGTH = 4096;  // 4KB limit
+        if (methodParam.size() > MAX_JSON_PARAM_LENGTH)
+        {
+            errMsg = "interface_params too long, max allowed size is 4096 bytes";
+            ret = API_INVALID_PARAM;
+            APIIMP_LOGERROR << FILE_FUN << "rejected oversized params, size=" << methodParam.size() << endl;
+            break;
+        }
+
+        // Security fix: check JSON nesting depth to prevent stack exhaustion
+        static const int MAX_JSON_NESTING_DEPTH = 64;
+        if (!methodParam.empty())
+        {
+            int depth = 0;
+            int maxDepth = 0;
+            for (size_t i = 0; i < methodParam.size(); ++i)
+            {
+                char c = methodParam[i];
+                if (c == '[' || c == '{')
+                {
+                    ++depth;
+                    if (depth > maxDepth) maxDepth = depth;
+                }
+                else if (c == ']' || c == '}')
+                {
+                    --depth;
+                }
+                if (maxDepth > MAX_JSON_NESTING_DEPTH)
+                {
+                    break;
+                }
+            }
+            if (maxDepth > MAX_JSON_NESTING_DEPTH)
+            {
+                errMsg = "JSON nesting depth exceeds maximum allowed limit";
+                ret = API_INVALID_PARAM;
+                APIIMP_LOGERROR << FILE_FUN << "rejected deep-nested JSON, depth=" << maxDepth << endl;
+                break;
+            }
+        }
+
         rapidjson::Document document;
-        rapidjson::ParseResult bParseOk = document.Parse(methodParam.c_str());
+        // Security fix: use iterative parsing to prevent recursive stack overflow
+        rapidjson::ParseResult bParseOk = document.Parse<rapidjson::kParseIterativeFlag>(methodParam.c_str());
         
         //某些获取接口不需要传请求参数进来，
         //此时rapidjson解析时会认为失败，所以要做非空判断避免这种逻辑
