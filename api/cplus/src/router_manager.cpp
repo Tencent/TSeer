@@ -16,6 +16,7 @@
 
 #include "router_manager.h"
 
+#include <iostream>
 #include <sys/syscall.h>
 #include <errno.h>
 #include <sstream>
@@ -344,16 +345,10 @@ int RouterManager::getRouterSingle(InnerRouterRequest &req, string &errMsg, bool
     Tseer::AgentRouterResponse rsp;
     string fileName = req.obj + req.slaveSet + TC_Common::tostr(req.lbGetType) + TC_Common::tostr(req.type);
     
-    if (_remoteProvider->isAvailable())
-    {
+    if (_remoteProvider->isAvailable()) {
         ret = _remoteProvider->getRouteInfo(req, rsp, errMsg);
-        if (ret == 0)
-        {
+        if (ret == 0 && rsp.resultList.size() == 1) {
             //填充返给客户的信息
-            if (rsp.resultList.size() == 0 || rsp.resultList.size() > 1) {
-                //远端返回内容不合法
-                goto cache;
-            }
             nodeInfo.ip = rsp.resultList[0].ip;
             nodeInfo.port = rsp.resultList[0].port;
             nodeInfo.isTcp = rsp.resultList[0].isTcp;
@@ -368,34 +363,25 @@ int RouterManager::getRouterSingle(InnerRouterRequest &req, string &errMsg, bool
             UniRamCacheIter uniIter = _uniRamCache.find(tableKey);
 
             //更新内存信息
-            if (isHash)
-            {
-                if (hashIter == _hashRamCache.end())
-                {
+            if (isHash) {
+                if (hashIter == _hashRamCache.end()) {
                     //首次访问，内存缓存map并不存在
                     std::map<long, RouterNodeInfo> tmpMap;
                     tmpMap.insert(std::make_pair(req.hashKey, nodeInfo));
                     _hashRamCache.insert(std::make_pair(tableKey, tmpMap));
-                }
-                else
-                {
+                } else {
                     hashIter->second[req.hashKey] = nodeInfo;
                 }
                 
                 //更新文件缓存
                 _cacheMgr.updateHashCache(tableKey, fileName, _hashRamCache[tableKey]);
-            }
-            else
-            {
-                if (uniIter == _uniRamCache.end())
-                {
+            } else {
+                if (uniIter == _uniRamCache.end()) {
                     //首次访问，内存缓存set并不存在
                     std::set<RouterNodeInfo> tmpSet;
                     tmpSet.insert(nodeInfo);
                     _uniRamCache.insert(std::make_pair(tableKey, tmpSet));
-                }
-                else
-                {
+                } else {
                     uniIter->second.insert(nodeInfo);
                 }
                 
@@ -410,79 +396,60 @@ int RouterManager::getRouterSingle(InnerRouterRequest &req, string &errMsg, bool
                     _uniCacheIndex.insert(std::make_pair(tableKey, indexIter));
                 }
                 indexIter = _uniCacheIndex.find(tableKey)->second;
-                if (indexIter == _uniRamCache[tableKey].end())
-                {
+                if (indexIter == _uniRamCache[tableKey].end()) {
                     _uniCacheIndex.find(tableKey)->second = _uniRamCache[tableKey].begin();
-                }
-                else
-                {
+                } else {
                     _uniCacheIndex.find(tableKey)->second++;
                 }
             }
 
             return 0;
+        }
+       
+        //远端获取失败后对可用性状态进行检查, 走缓存逻辑
+        _remoteProvider->addFailedNumAndCheckAvailable();
+    }
+    
+    //remoteProvider不可用或者请求失败，从缓存中获取数据
+    ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
+    if (ret == 0) {
+        return 0;
+    }
 
-        }//if (ret == 0)
-        else
-        {
-            goto cache;
-        }
-    }//if (_remoteProvider->isAvailable())
-    else
-    {
-    cache:
-        ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
-        if (ret == 0)
-        {
+    std::string subErr;
+    if (isHash) {
+        std::map<long, RouterNodeInfo> newNodeMap;
+        ret = _cacheProvider->getRouteInfo(req, rsp, newNodeMap, subErr);
+        if (ret == 0) {
+            _hashRamCache.insert(std::make_pair(tableKey, newNodeMap));
+            //再次在内存中查找
+            ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
+            if (ret == -1) {
+                //远程错误，本地也找不到节点
+                return -2;
+            }
+
             return 0;
+        } else {
+            //远程错误，本地也找不到节点
+            return -2;
         }
-        
-        std::string subErr;
-        if (isHash)
-        {
-            std::map<long, RouterNodeInfo> newNodeMap;
-            ret = _cacheProvider->getRouteInfo(req, rsp, newNodeMap, subErr);
-            if (ret == 0)
-            {
-                _hashRamCache.insert(std::make_pair(tableKey, newNodeMap));
-                //再次在内存中查找
-                ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
-                if (ret == -1)
-                {
-                    //远程错误，本地也找不到节点
-                    return -2;
-                }
-                
-                return 0;
-            }
-            else
-            {
+    } else {
+        std::set<RouterNodeInfo> newNodeSet;
+        ret = _cacheProvider->getRouteInfo(req, rsp, newNodeSet, subErr);
+        if (ret == 0) {
+            _uniRamCache.insert(std::make_pair(tableKey, newNodeSet));
+            //再次在内存中查找
+            ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
+            if (ret == -1) {
                 //远程错误，本地也找不到节点
                 return -2;
             }
-        }
-        else
-        {
-            std::set<RouterNodeInfo> newNodeSet;
-            ret = _cacheProvider->getRouteInfo(req, rsp, newNodeSet, subErr);
-            if (ret == 0)
-            {
-                _uniRamCache.insert(std::make_pair(tableKey, newNodeSet));
-                //再次在内存中查找
-                ret = getRouterFromUniRam(errMsg, req, nodeInfo, isHash);
-                if (ret == -1)
-                {
-                    //远程错误，本地也找不到节点
-                    return -2;
-                }
-                
-                return 0;
-            }
-            else
-            {
-                //远程错误，本地也找不到节点
-                return -2;
-            }
+
+            return 0;
+        } else {
+            //远程错误，本地也找不到节点
+            return -2;
         }
     }
     return 0;
@@ -775,6 +742,5 @@ int RouterManager::updateStat(const InnerRouterRequest &req, int ret, int timeCo
         return -1;
     }
 }
-
 
 }

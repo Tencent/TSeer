@@ -264,6 +264,14 @@ int parseConfig(int argc, char *argv[])
         useAge();
     }
 
+    //获取本机配置的 ip (IPV4)
+    char iface[8];
+    char ip[INET_ADDRSTRLEN];
+    if (!get_default_if(iface, 8) || !get_ip(iface, ip, INET_ADDRSTRLEN)) {
+        cerr << FILE_FUN << " get default ip via /proc/net/route failed, using 127.0.0.1 instead" << endl;
+        strcpy(ip, "127.0.0.1");
+    }
+
     //读取配置文件
     if(!TC_File::isFileExistEx(configFile))
     {
@@ -297,7 +305,7 @@ int parseConfig(int argc, char *argv[])
         #endif
     }
 
-    string sInnerIp = conf.get("/server<localip>", "127.0.0.1");
+    string sInnerIp = conf.get("/server<localip>", ip);
     string regPort = conf.get("/server<regport>", "9902");
     string queryPort = conf.get("/server<queryport>", "9903");
     string apiPort = conf.get("/server<apiport>", "9904");

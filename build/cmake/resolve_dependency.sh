@@ -2,12 +2,16 @@
 
 TIMESTAMP=`date "+%F %T"`
 
-echo "[INFO] $TIMESTAMP resolve depedency rapidjson..."
-git clone https://github.com/Tencent/rapidjson.git >/dev/null
+if [ -e "./rapidjson" ]; then
+    echo "[INFO] $TIMESTAMP rapidjson already downloaded."
+else
+    echo "[INFO] $TIMESTAMP resolve depedency rapidjson..."
+    git clone https://github.com/Tencent/rapidjson.git >/dev/null
 
-if [ "$?" -ne "0" ]; then
-    echo "[ERROR] $TIMESTAMP Download rapidjson failed."
-    exit 3
+    if [ "$?" -ne "0" ]; then
+        echo "[ERROR] $TIMESTAMP Download rapidjson failed."
+        exit 3
+    fi
 fi
 
 mkdir -p ../thirdparty/
