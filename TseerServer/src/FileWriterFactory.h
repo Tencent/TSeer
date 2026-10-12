@@ -70,6 +70,12 @@ public:
 
     int updateAgentInfo(const Tseer::PushPackageInfo & pushPkInfo);
 
+    // Restrict packageName to [A-Za-z0-9._-]; reject path separators and "..".
+    static bool isValidPackageName(const std::string& packageName);
+
+    // Canonical path under baseDir via realpath; empty if it escapes baseDir.
+    static std::string resolveSafePath(const std::string& baseDir, const std::string& packageName);
+
     /*定时巡检是否有超时的task*/
     void timeout();
 private:

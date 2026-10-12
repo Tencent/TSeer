@@ -18,10 +18,71 @@
 #include "util/tc_md5.h"
 #include "servant/TarsLogger.h"
 #include "util.h"
+#include <cstdlib>
+#include <cstring>
+#include <limits.h>
 
 FileWriterFactory::FileWriterFactory() : _hashf(tars::hash_new<string>())
 {
 }
+
+bool FileWriterFactory::isValidPackageName(const std::string& packageName)
+{
+    if (packageName.empty() || packageName.size() > 255)
+    {
+        return false;
+    }
+    // Absolute path or Windows separator.
+    if (packageName[0] == '/' || packageName[0] == '\\')
+    {
+        return false;
+    }
+    for (size_t i = 0; i < packageName.size(); ++i)
+    {
+        char c = packageName[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+              (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-'))
+        {
+            return false;
+        }
+        // Reject ".." directory traversal in any form.
+        if (c == '.' && i + 1 < packageName.size() && packageName[i + 1] == '.')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::string FileWriterFactory::resolveSafePath(const std::string& baseDir, const std::string& packageName)
+{
+    if (!isValidPackageName(packageName))
+    {
+        return "";
+    }
+
+    char baseBuf[PATH_MAX];
+    if (realpath(baseDir.c_str(), baseBuf) == NULL)
+    {
+        return "";
+    }
+    std::string base(baseBuf);
+    if (base.empty() || base[base.size() - 1] != '/')
+    {
+        base += '/';
+    }
+
+    // packageName has no path separators after isValidPackageName.
+    std::string safe = base + packageName;
+
+    // Defense in depth: resolved path must stay strictly under baseDir.
+    if (safe.compare(0, base.size(), base) != 0)
+    {
+        return "";
+    }
+    return safe;
+}
+
 
 int FileWriterFactory::updateAgentInfo(const Tseer::PushPackageInfo& pushPkInfo)
 {
@@ -81,7 +142,21 @@ int FileWriterFactory::write(const Tseer::PushPackageInfo & pushPkInfo,string& r
                     task.md5 = pushPkInfo.md5;
                     task.pos = pushPkInfo.pos;
 
-                    task.filePath = tars::TC_File::simplifyDirectory(directory + "/" + pushPkInfo.packageName);
+                    if (!isValidPackageName(pushPkInfo.packageName))
+                    {
+                        result = "invalid packageName, only [A-Za-z0-9._-] allowed";
+                        TLOGERROR(FILE_FUN<< pushPkInfo.packageName << "|"<<result<< endl);
+                        ret = -1;
+                        break;
+                    }
+                    task.filePath = resolveSafePath(directory, pushPkInfo.packageName);
+                    if (task.filePath.empty())
+                    {
+                        result = "invalid packageName, path must stay under DataPath";
+                        TLOGERROR(FILE_FUN<< pushPkInfo.packageName << "|"<<result<< endl);
+                        ret = -1;
+                        break;
+                    }
                     task.tInTime = TNOW;
                     task.lock = getRecLock(task);
 
@@ -163,6 +238,11 @@ int FileWriterFactory::write(const Tseer::PushPackageInfo & pushPkInfo,string& r
                             TLOGERROR(FILE_FUN<< rTask.filePath<<"|"<<pushPkInfo.packageName<< endl);
                             ret = -1;
                             break;
+                        }
+                        // Success: drop task so the same packageName can be re-pushed.
+                        {
+                            TC_ThreadLock::Lock lock(*this);
+                            _taskList.erase(key);
                         }
                         return 0;
                     }
