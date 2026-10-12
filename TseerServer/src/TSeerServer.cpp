@@ -402,6 +402,11 @@ int parseConfig(int argc, char *argv[])
         m["host"] = conf.get("/etcd<host>", "127.0.0.1:2379");
         tNewConf.insertDomainParam( "/tars/application/etcd", m, true);
     }
+
+    // pushPackage caller allow-list (optional). Empty => loopback + localip only.
+    m.clear();
+    m["push_package_allow_ips"] = conf.get("/server<push_package_allow_ips>", "");
+    tNewConf.insertDomainParam("/tseer", m, true);
     
     if(TC_File::isFileExistEx(g_app.g_configFile))
     {

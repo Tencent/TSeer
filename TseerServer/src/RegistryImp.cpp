@@ -267,6 +267,45 @@ Int32 RegistryImp::updatePacket(const UpdateReq & req, UpdateRsp &rsp, tars::Tar
 }
 
 
+bool RegistryImp::isPushPackageCallerAllowed(tars::TarsCurrentPtr current)
+{
+    if (!current)
+    {
+        return false;
+    }
+
+    string ip = current->getIp();
+    if (ip == "127.0.0.1" || ip == "::1" || ip == "0:0:0:0:0:0:0:1")
+    {
+        return true;
+    }
+    // Same-host web/admin often connects via LocalIp rather than loopback.
+    if (!ServerConfig::LocalIp.empty() && ip == ServerConfig::LocalIp)
+    {
+        return true;
+    }
+
+    // Optional allow-list: /tseer/<push_package_allow_ips>, comma-separated.
+    extern TC_Config * g_pconf;
+    if (g_pconf != NULL)
+    {
+        string allowList = g_pconf->get("/tseer/<push_package_allow_ips>", "");
+        if (!allowList.empty())
+        {
+            vector<string> ips = TC_Common::sepstr<string>(allowList, ",;");
+            for (size_t i = 0; i < ips.size(); ++i)
+            {
+                string item = TC_Common::trim(ips[i]);
+                if (!item.empty() && item == ip)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 Int32 RegistryImp::pushPackage(const Tseer::PushPackageInfo & pushPkInfo,std::string &result,tars::TarsCurrentPtr current)
 {
     if(pushPkInfo.packageName.empty())
@@ -275,7 +314,33 @@ Int32 RegistryImp::pushPackage(const Tseer::PushPackageInfo & pushPkInfo,std::st
         return -1;
     }
 
-    string dirPath = TC_File::simplifyDirectory(ServerConfig::DataPath + "/" + pushPkInfo.packageName);
+    if (!isPushPackageCallerAllowed(current))
+    {
+        result = "permission denied: unauthorized caller";
+        UPDATEPACKAGE_LOG<< FILE_FUN<<current->getIp()<<":"<<current->getPort()
+                      <<"|"<<pushPkInfo.packageName
+                      <<"|rejected (unauthorized)" << endl;
+        return -1;
+    }
+
+    if (!FileWriterFactory::isValidPackageName(pushPkInfo.packageName))
+    {
+        result = "invalid packageName, only [A-Za-z0-9._-] allowed";
+        UPDATEPACKAGE_LOG<< FILE_FUN<<current->getIp()<<":"<<current->getPort()
+                      <<"|"<<pushPkInfo.packageName
+                      <<"|rejected (illegal name)" << endl;
+        return -1;
+    }
+
+    string dirPath = FileWriterFactory::resolveSafePath(ServerConfig::DataPath, pushPkInfo.packageName);
+    if (dirPath.empty())
+    {
+        result = "invalid packageName, path must stay under DataPath";
+        UPDATEPACKAGE_LOG<< FILE_FUN<<current->getIp()<<":"<<current->getPort()
+                      <<"|"<<pushPkInfo.packageName
+                      <<"|rejected (path escape)" << endl;
+        return -1;
+    }
     UPDATEPACKAGE_LOG<< FILE_FUN<<current->getIp()<<":"<<current->getPort()
                   <<"|"<<current->getRequestId()
                   <<"|"<<pushPkInfo.packageName

@@ -130,6 +130,9 @@ public:
 private:
     void genFailRsp(const UpdateReq & req, UpdateRsp &rsp);
     string intStateToString(const ServerState &state);
+
+    // Only loopback / LocalIp / configured allow-list may call pushPackage.
+    static bool isPushPackageCallerAllowed(tars::TarsCurrentPtr current);
 };
 
 #endif
